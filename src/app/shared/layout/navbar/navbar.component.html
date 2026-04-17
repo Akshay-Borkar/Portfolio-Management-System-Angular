@@ -1,0 +1,11 @@
+<p-menubar [model]="menuItems">
+  <ng-template pTemplate="start">
+    <span class="brand-title">📈 StockMarket</span>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="flex align-items-center gap-2">
+      <span class="text-sm text-color-secondary">{{ (currentUser$ | async)?.userName }}</span>
+      <p-button label="Logout" severity="secondary" size="small" (onClick)="onLogout()" />
+    </div>
+  </ng-template>
+</p-menubar>

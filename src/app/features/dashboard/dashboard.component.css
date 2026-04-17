@@ -1,0 +1,13 @@
+.stat-icon {
+  font-size: 2.5rem;
+}
+.stat-icon.primary { color: var(--primary-color); }
+.stat-icon.green   { color: var(--green-500); }
+.stat-icon.yellow  { color: var(--yellow-500); }
+.stat-icon.purple  { color: var(--purple-500); }
+
+.stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+}

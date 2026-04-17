@@ -50,6 +50,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/sentiment/sentiment.component').then((m) => m.SentimentComponent),
       },
+      {
+        path: 'portfolio',
+        loadComponent: () =>
+          import('./features/portfolio/portfolio.component').then((m) => m.PortfolioComponent),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

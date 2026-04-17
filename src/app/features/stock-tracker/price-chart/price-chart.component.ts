@@ -15,7 +15,8 @@ import { SignalRService } from '../../../core/services/signalr.service';
 @Component({
   selector: 'app-price-chart',
   standalone: true,
-  template: `<div #chartContainer style="width:100%; height:200px;"></div>`,
+  templateUrl: './price-chart.component.html',
+  styleUrl: './price-chart.component.css',
 })
 export class PriceChartComponent implements OnInit, OnDestroy {
   @Input({ required: true }) ticker!: string;

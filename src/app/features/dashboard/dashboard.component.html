@@ -1,0 +1,63 @@
+<h2>Welcome back, {{ (currentUser$ | async)?.userName }} 👋</h2>
+
+<div class="grid mt-3">
+  <div class="col-12 md:col-4">
+    <p-card>
+      <div class="flex align-items-center gap-3">
+        <i class="pi pi-th-large stat-icon primary"></i>
+        <div>
+          <div class="stat-value">{{ sectorCount$ | async }}</div>
+          <div class="text-color-secondary">Stock Sectors</div>
+        </div>
+      </div>
+      <ng-template pTemplate="footer">
+        <p-button label="Manage Sectors" routerLink="/sectors" size="small" />
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="col-12 md:col-4">
+    <p-card>
+      <div class="flex align-items-center gap-3">
+        <i class="pi pi-chart-line stat-icon green"></i>
+        <div>
+          <div class="stat-value">Live</div>
+          <div class="text-color-secondary">Price Tracker</div>
+        </div>
+      </div>
+      <ng-template pTemplate="footer">
+        <p-button label="Open Tracker" routerLink="/tracker" severity="success" size="small" />
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="col-12 md:col-4">
+    <p-card>
+      <div class="flex align-items-center gap-3">
+        <i class="pi pi-comments stat-icon yellow"></i>
+        <div>
+          <div class="stat-value">AI</div>
+          <div class="text-color-secondary">News Sentiment</div>
+        </div>
+      </div>
+      <ng-template pTemplate="footer">
+        <p-button label="Analyze News" routerLink="/sentiment" severity="warn" size="small" />
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="col-12 md:col-4">
+    <p-card>
+      <div class="flex align-items-center gap-3">
+        <i class="pi pi-wallet stat-icon purple"></i>
+        <div>
+          <div class="stat-value">P&amp;L</div>
+          <div class="text-color-secondary">Portfolio Dashboard</div>
+        </div>
+      </div>
+      <ng-template pTemplate="footer">
+        <p-button label="View Portfolio" routerLink="/portfolio" severity="help" size="small" />
+      </ng-template>
+    </p-card>
+  </div>
+</div>

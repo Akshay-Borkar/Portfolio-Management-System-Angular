@@ -6,13 +6,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   selector: 'app-shell',
   standalone: true,
   imports: [RouterOutlet, NavbarComponent],
-  template: `
-    <div class="app-shell">
-      <app-navbar />
-      <main class="app-content">
-        <router-outlet />
-      </main>
-    </div>
-  `,
+  templateUrl: './shell.component.html',
+  styleUrl: './shell.component.css',
 })
 export class ShellComponent {}

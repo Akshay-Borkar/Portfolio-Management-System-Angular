@@ -13,6 +13,8 @@ import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';
 import { stockSectorReducer } from './store/stock-sector/stock-sector.reducer';
 import { StockSectorEffects } from './store/stock-sector/stock-sector.effects';
+import { portfolioReducer } from './store/portfolio/portfolio.reducer';
+import { PortfolioEffects } from './store/portfolio/portfolio.effects';
 import { loadUserFromStorage } from './store/auth/auth.actions';
 
 function initializeApp(store: Store) {
@@ -27,8 +29,9 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       auth: authReducer,
       stockSector: stockSectorReducer,
+      portfolio: portfolioReducer,
     }),
-    provideEffects([AuthEffects, StockSectorEffects]),
+    provideEffects([AuthEffects, StockSectorEffects, PortfolioEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: environment.production }),
     { provide: JWT_OPTIONS, useValue: {} },
     JwtHelperService,

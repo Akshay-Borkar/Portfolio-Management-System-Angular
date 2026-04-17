@@ -1,0 +1,49 @@
+<h2>Live Stock Tracker</h2>
+
+<div class="search-bar">
+  <input
+    pInputText
+    [(ngModel)]="tickerInput"
+    placeholder="Enter ticker (e.g. CDSL.NS)"
+    (keydown.enter)="onSubscribe()"
+  />
+  <p-button label="Subscribe" icon="pi pi-plus" (onClick)="onSubscribe()" />
+</div>
+
+@if (subscribedTickers.size === 0) {
+  <div class="empty-state">
+    <i class="pi pi-chart-line text-5xl block mb-2"></i>
+    No stocks subscribed yet. Enter a ticker above to start.
+  </div>
+}
+
+<div class="grid">
+  @for (entry of subscribedTickers | keyvalue; track entry.key) {
+    <div class="col-12 md:col-6 lg:col-4">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <span class="font-bold text-lg">{{ entry.key }}</span>
+            <p-button
+              icon="pi pi-times"
+              severity="danger"
+              [rounded]="true"
+              [text]="true"
+              size="small"
+              (onClick)="onUnsubscribe(entry.key)"
+            />
+          </div>
+        </ng-template>
+        <div class="text-2xl font-bold mb-3">
+          {{ entry.value !== null ? (entry.value | number:'1.2-2') : '—' }}
+          <p-tag
+            [value]="entry.value !== null ? 'LIVE' : 'WAITING'"
+            [severity]="entry.value !== null ? 'success' : 'warn'"
+            styleClass="ml-2 text-xs"
+          />
+        </div>
+        <app-price-chart [ticker]="entry.key" />
+      </p-card>
+    </div>
+  }
+</div>

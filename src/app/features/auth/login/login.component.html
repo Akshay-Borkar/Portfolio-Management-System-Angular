@@ -1,0 +1,36 @@
+<div class="login-wrapper">
+  <p-card header="Sign In" [style]="{ width: '380px' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="flex flex-column gap-3">
+        <div class="flex flex-column gap-1">
+          <label for="userName">Username</label>
+          <input pInputText id="userName" formControlName="userName" placeholder="Enter username" />
+        </div>
+        <div class="flex flex-column gap-1">
+          <label for="password">Password</label>
+          <p-password
+            id="password"
+            formControlName="password"
+            placeholder="Enter password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+          />
+        </div>
+        @if (error$ | async; as err) {
+          <p-message severity="error" [text]="err" />
+        }
+        <p-button
+          label="Sign In"
+          type="submit"
+          [loading]="!!(loading$ | async)"
+          [disabled]="form.invalid"
+          styleClass="w-full"
+        />
+        <span class="text-center text-sm">
+          No account? <a routerLink="/register">Register</a>
+        </span>
+      </div>
+    </form>
+  </p-card>
+</div>

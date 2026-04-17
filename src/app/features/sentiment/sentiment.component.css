@@ -1,0 +1,14 @@
+.search-bar {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+  flex: 1;
+}
+
+.sentiment-col {
+  width: 130px;
+}

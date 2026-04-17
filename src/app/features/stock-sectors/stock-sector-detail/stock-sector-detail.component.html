@@ -1,0 +1,38 @@
+<div class="mb-3">
+  <p-button label="← Back to Sectors" routerLink="/sectors" severity="secondary" size="small" />
+</div>
+
+@if (loading$ | async) {
+  <div class="flex justify-content-center py-5"><p-progressSpinner /></div>
+}
+
+@if (error$ | async; as err) {
+  <p-message severity="error" [text]="err" styleClass="mb-3" />
+}
+
+@if (sector$ | async; as sector) {
+  <p-card [header]="sector.stockSectorName">
+    <ng-template pTemplate="subtitle">
+      <span class="text-sm text-color-secondary">
+        Created: {{ sector.dateCreated | date:'medium' }} &nbsp;|&nbsp;
+        Modified: {{ sector.dateModified | date:'medium' }}
+      </span>
+    </ng-template>
+
+    <form [formGroup]="form" (ngSubmit)="onSave()">
+      <div class="form-fields">
+        <div class="flex flex-column gap-1">
+          <label>Sector Name</label>
+          <input pInputText formControlName="stockSectorName" />
+        </div>
+        <div class="flex flex-column gap-1">
+          <label>Sector P/E</label>
+          <p-inputNumber formControlName="sectorPE" [minFractionDigits]="2" />
+        </div>
+        <div class="flex gap-2">
+          <p-button label="Save Changes" type="submit" [disabled]="form.invalid || form.pristine" />
+        </div>
+      </div>
+    </form>
+  </p-card>
+}

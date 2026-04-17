@@ -1,0 +1,197 @@
+<div class="page-header">
+  <h2 class="m-0">Portfolio Dashboard</h2>
+  <div class="flex gap-2">
+    <p-button label="Add Stock" icon="pi pi-plus" size="small" (onClick)="showAddStockDialog = true" />
+    <p-button label="Add Investment" icon="pi pi-wallet" size="small" severity="success"
+      (onClick)="openAddInvestmentDialog()" />
+    <p-button icon="pi pi-refresh" size="small" severity="secondary"
+      [loading]="(loading$ | async) ?? false" (onClick)="refresh()" />
+  </div>
+</div>
+
+@if (loading$ | async) {
+  <div class="flex justify-content-center py-6">
+    <p-progressSpinner strokeWidth="4" />
+  </div>
+} @else {
+  @if (summary$ | async; as summary) {
+
+    <!-- Summary Cards -->
+    <div class="grid mb-4">
+      <div class="col-12 md:col-3">
+        <p-card styleClass="h-full">
+          <div class="text-color-secondary text-sm mb-1">Total Invested</div>
+          <div class="stat-value">{{ summary.totalInvested | currency:'INR':'symbol':'1.0-0' }}</div>
+        </p-card>
+      </div>
+      <div class="col-12 md:col-3">
+        <p-card styleClass="h-full">
+          <div class="text-color-secondary text-sm mb-1">Current Value</div>
+          <div class="stat-value">{{ summary.currentValue | currency:'INR':'symbol':'1.0-0' }}</div>
+        </p-card>
+      </div>
+      <div class="col-12 md:col-3">
+        <p-card styleClass="h-full">
+          <div class="text-color-secondary text-sm mb-1">Total P&amp;L</div>
+          <div class="stat-value" [ngClass]="summary.totalPnL >= 0 ? 'gain' : 'loss'">
+            {{ summary.totalPnL >= 0 ? '+' : '' }}{{ summary.totalPnL | currency:'INR':'symbol':'1.0-0' }}
+          </div>
+        </p-card>
+      </div>
+      <div class="col-12 md:col-3">
+        <p-card styleClass="h-full">
+          <div class="text-color-secondary text-sm mb-1">Return</div>
+          <div class="stat-value" [ngClass]="summary.totalPnLPercent >= 0 ? 'gain' : 'loss'">
+            {{ summary.totalPnLPercent >= 0 ? '+' : '' }}{{ summary.totalPnLPercent | number:'1.2-2' }}%
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Holdings + Sector Chart -->
+    <div class="grid">
+      <div class="col-12 lg:col-8">
+        <p-card header="Holdings">
+          <p-table [value]="summary.holdings" [paginator]="true" [rows]="8"
+            [rowsPerPageOptions]="[8, 15, 25]" responsiveLayout="scroll" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="ticker">Ticker <p-sortIcon field="ticker" /></th>
+                <th>Stock</th>
+                <th>Sector</th>
+                <th pSortableColumn="quantity">Qty <p-sortIcon field="quantity" /></th>
+                <th pSortableColumn="avgBuyingPrice">Avg Buy <p-sortIcon field="avgBuyingPrice" /></th>
+                <th pSortableColumn="currentPrice">LTP <p-sortIcon field="currentPrice" /></th>
+                <th pSortableColumn="investedAmount">Invested <p-sortIcon field="investedAmount" /></th>
+                <th pSortableColumn="currentValue">Value <p-sortIcon field="currentValue" /></th>
+                <th pSortableColumn="pnL">P&amp;L <p-sortIcon field="pnL" /></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-h>
+              <tr>
+                <td><span class="font-bold">{{ h.ticker }}</span></td>
+                <td>{{ h.stockName }}</td>
+                <td><p-tag [value]="h.sectorName" severity="info" /></td>
+                <td>{{ h.quantity | number:'1.2-4' }}</td>
+                <td>{{ h.avgBuyingPrice | number:'1.2-2' }}</td>
+                <td>{{ h.currentPrice | number:'1.2-2' }}</td>
+                <td>{{ h.investedAmount | number:'1.0-0' }}</td>
+                <td>{{ h.currentValue | number:'1.0-0' }}</td>
+                <td>
+                  <span [ngClass]="h.pnL >= 0 ? 'gain' : 'loss'" class="font-semibold">
+                    {{ h.pnL >= 0 ? '+' : '' }}{{ h.pnL | number:'1.0-0' }}
+                    ({{ h.pnLPercent >= 0 ? '+' : '' }}{{ h.pnLPercent | number:'1.1-1' }}%)
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="9" class="text-center text-color-secondary py-4">
+                  No holdings found. Add a stock and investment to get started.
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+      </div>
+
+      <div class="col-12 lg:col-4">
+        <p-card header="Sector Allocation">
+          @if (sectorChartData$ | async; as chartData) {
+            @if (summary.sectorAllocations.length > 0) {
+              <p-chart type="doughnut" [data]="chartData" [options]="chartOptions" height="260px" />
+              <div class="mt-3">
+                @for (s of summary.sectorAllocations; track s.sectorName) {
+                  <div class="allocation-row">
+                    <span class="text-sm">{{ s.sectorName }}</span>
+                    <span class="font-semibold text-sm">{{ s.allocationPercent | number:'1.1-1' }}%</span>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center text-color-secondary py-4">No sector data yet.</div>
+            }
+          }
+        </p-card>
+      </div>
+    </div>
+
+  } @else {
+    <p-card>
+      <div class="empty-state">
+        <i class="pi pi-chart-pie empty-icon"></i>
+        <p class="text-color-secondary">
+          Your portfolio is empty. Add a stock and record your first investment to see your P&amp;L dashboard.
+        </p>
+        <div class="flex justify-content-center gap-2 mt-3">
+          <p-button label="Add Stock" icon="pi pi-plus" (onClick)="showAddStockDialog = true" />
+        </div>
+      </div>
+    </p-card>
+  }
+}
+
+<!-- Add Stock Dialog -->
+<p-dialog header="Add Stock to Portfolio" [(visible)]="showAddStockDialog"
+  [style]="{ width: '420px' }" [modal]="true" [closable]="true">
+  <form [formGroup]="stockForm" (ngSubmit)="submitAddStock()" class="flex flex-column gap-3 pt-2">
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Ticker Symbol *</label>
+      <input pInputText formControlName="ticker" placeholder="e.g. RELIANCE.NS" class="w-full" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Stock Name *</label>
+      <input pInputText formControlName="stockName" placeholder="e.g. Reliance Industries" class="w-full" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Sector *</label>
+      <p-dropdown formControlName="stockSectorId" [options]="(sectors$ | async) ?? []"
+        optionLabel="stockSectorName" optionValue="id"
+        placeholder="Select sector" styleClass="w-full" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Stock P/E (optional)</label>
+      <p-inputNumber formControlName="stockPE" [minFractionDigits]="2" [maxFractionDigits]="2"
+        placeholder="e.g. 25.50" styleClass="w-full" />
+    </div>
+    <div class="flex justify-content-end gap-2 mt-2">
+      <p-button label="Cancel" severity="secondary" type="button" (onClick)="showAddStockDialog = false" />
+      <p-button label="Add Stock" type="submit" [loading]="(loading$ | async) ?? false"
+        [disabled]="stockForm.invalid" />
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Add Investment Dialog -->
+<p-dialog header="Record Investment" [(visible)]="showAddInvestmentDialog"
+  [style]="{ width: '420px' }" [modal]="true" [closable]="true">
+  <form [formGroup]="investmentForm" (ngSubmit)="submitAddInvestment()" class="flex flex-column gap-3 pt-2">
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Stock *</label>
+      <p-dropdown formControlName="stockId" [options]="(holdings$ | async) ?? []"
+        optionLabel="ticker" optionValue="stockId"
+        placeholder="Select stock" styleClass="w-full" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Amount Invested (₹) *</label>
+      <p-inputNumber formControlName="investedAmount" [minFractionDigits]="2"
+        placeholder="e.g. 50000" styleClass="w-full" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Buying Price per Share (₹) *</label>
+      <p-inputNumber formControlName="buyingPrice" [minFractionDigits]="2"
+        placeholder="e.g. 2500.00" styleClass="w-full" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label class="text-sm font-medium">Investment Date *</label>
+      <p-calendar formControlName="investmentDate" dateFormat="dd/mm/yy"
+        [maxDate]="today" [showIcon]="true" styleClass="w-full" />
+    </div>
+    <div class="flex justify-content-end gap-2 mt-2">
+      <p-button label="Cancel" severity="secondary" type="button" (onClick)="showAddInvestmentDialog = false" />
+      <p-button label="Record" type="submit" [loading]="(loading$ | async) ?? false"
+        [disabled]="investmentForm.invalid" />
+    </div>
+  </form>
+</p-dialog>
