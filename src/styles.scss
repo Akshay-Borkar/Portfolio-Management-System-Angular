@@ -1,0 +1,47 @@
+// Global layout & overrides
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--surface-ground);
+  color: var(--text-color);
+}
+
+// Utility: full-height flex column shell
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+// Card consistent spacing
+.p-card {
+  margin-bottom: 1rem;
+}
+
+// Sentiment tag colors
+.sentiment-positive {
+  background-color: var(--green-500) !important;
+}
+
+.sentiment-negative {
+  background-color: var(--red-500) !important;
+}
+
+.sentiment-neutral {
+  background-color: var(--yellow-500) !important;
+}
+
+.sentiment-unknown {
+  background-color: var(--surface-400) !important;
+}
