@@ -24,6 +24,7 @@
     "@ngrx/entity": "^19.0.0",
     "@ngrx/store": "^19.0.0",
     "@ngrx/store-devtools": "^19.0.0",
+    "@primeng/themes": "^21.0.4",
     "chart.js": "^4.5.1",
     "lightweight-charts": "^4.2.0",
     "primeflex": "^3.3.1",

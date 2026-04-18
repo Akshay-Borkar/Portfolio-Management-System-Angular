@@ -1,7 +1,9 @@
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
 import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 import { provideStore, Store } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
@@ -25,7 +27,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAnimations(),
+    provideAnimationsAsync(),
+    providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.dark-mode', cssLayer: false } } }),
     provideStore({
       auth: authReducer,
       stockSector: stockSectorReducer,

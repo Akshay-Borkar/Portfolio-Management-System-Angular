@@ -1,13 +1,71 @@
-.stat-icon {
-  font-size: 2.5rem;
+.welcome-heading {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e0e7ff 0%, #a5b4fc 60%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.25rem;
 }
-.stat-icon.primary { color: var(--primary-color); }
-.stat-icon.green   { color: var(--green-500); }
-.stat-icon.yellow  { color: var(--yellow-500); }
-.stat-icon.purple  { color: var(--purple-500); }
 
-.stat-value {
-  font-size: 1.875rem;
-  font-weight: 700;
+.feature-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: var(--card-gradient, linear-gradient(135deg, #6366f1, #8b5cf6));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+.feature-card.indigo { --card-gradient: linear-gradient(135deg, #6366f1, #818cf8); }
+.feature-card.green  { --card-gradient: linear-gradient(135deg, #059669, #34d399); }
+.feature-card.yellow { --card-gradient: linear-gradient(135deg, #d97706, #fbbf24); }
+.feature-card.purple { --card-gradient: linear-gradient(135deg, #7c3aed, #a78bfa); }
+
+.icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i { font-size: 1.6rem; }
+}
+
+.icon-badge.indigo { background: rgba(99, 102, 241, 0.18); color: #818cf8; }
+.icon-badge.green  { background: rgba(5, 150, 105, 0.18);  color: #34d399; }
+.icon-badge.yellow { background: rgba(217, 119, 6, 0.18);  color: #fbbf24; }
+.icon-badge.purple { background: rgba(124, 58, 237, 0.18); color: #a78bfa; }
+
+.card-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.15rem;
+}
+
+.card-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.92);
   line-height: 1.2;
 }

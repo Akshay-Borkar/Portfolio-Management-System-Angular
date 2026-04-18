@@ -1,36 +1,58 @@
 <div class="login-wrapper">
-  <p-card header="Sign In" [style]="{ width: '380px' }">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="flex flex-column gap-3">
-        <div class="flex flex-column gap-1">
-          <label for="userName">Username</label>
-          <input pInputText id="userName" formControlName="userName" placeholder="Enter username" />
-        </div>
-        <div class="flex flex-column gap-1">
-          <label for="password">Password</label>
-          <p-password
-            id="password"
-            formControlName="password"
-            placeholder="Enter password"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
+  <!-- Left panel -->
+  <div class="login-left">
+    <div class="login-brand">📈 StockMarket</div>
+    <div class="login-tagline">
+      Track, Analyse &amp;<br /><span>Grow</span> your<br />investments
+    </div>
+    <p class="login-sub">
+      Real-time price tracking, AI-powered news sentiment, and a full portfolio P&amp;L dashboard — all in one place.
+    </p>
+    <div class="login-features">
+      <div class="feature-pill"><i class="pi pi-chart-line"></i> Live price streaming via SignalR</div>
+      <div class="feature-pill"><i class="pi pi-comments"></i> AI news sentiment analysis</div>
+      <div class="feature-pill"><i class="pi pi-wallet"></i> Portfolio P&amp;L with sector allocation</div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="login-right">
+    <p-card styleClass="login-card">
+      <div class="login-title">Welcome back</div>
+      <div class="login-subtitle">Sign in to your account</div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="flex flex-column gap-3">
+          <div class="flex flex-column gap-1">
+            <label for="userName">Username</label>
+            <input pInputText id="userName" formControlName="userName" placeholder="Enter username" class="w-full" />
+          </div>
+          <div class="flex flex-column gap-1">
+            <label for="password">Password</label>
+            <p-password
+              id="password"
+              formControlName="password"
+              placeholder="Enter password"
+              [feedback]="false"
+              [toggleMask]="true"
+              styleClass="w-full"
+            />
+          </div>
+          @if (error$ | async; as err) {
+            <p-message severity="error" [text]="err" />
+          }
+          <p-button
+            label="Sign In"
+            icon="pi pi-sign-in"
+            type="submit"
+            [loading]="!!(loading$ | async)"
+            [disabled]="form.invalid"
+            styleClass="w-full mt-1"
           />
+          <span class="text-center text-sm text-color-secondary">
+            No account? <a routerLink="/register" style="color: #818cf8; text-decoration: none; font-weight: 600;">Register</a>
+          </span>
         </div>
-        @if (error$ | async; as err) {
-          <p-message severity="error" [text]="err" />
-        }
-        <p-button
-          label="Sign In"
-          type="submit"
-          [loading]="!!(loading$ | async)"
-          [disabled]="form.invalid"
-          styleClass="w-full"
-        />
-        <span class="text-center text-sm">
-          No account? <a routerLink="/register">Register</a>
-        </span>
-      </div>
-    </form>
-  </p-card>
+      </form>
+    </p-card>
+  </div>
 </div>

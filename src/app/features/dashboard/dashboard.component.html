@@ -1,62 +1,63 @@
-<h2>Welcome back, {{ (currentUser$ | async)?.userName }} 👋</h2>
+<h2 class="welcome-heading">Welcome back, {{ (currentUser$ | async)?.userName }} 👋</h2>
+<p class="text-color-secondary mt-1 mb-4">Here's your financial overview</p>
 
-<div class="grid mt-3">
-  <div class="col-12 md:col-4">
-    <p-card>
-      <div class="flex align-items-center gap-3">
-        <i class="pi pi-th-large stat-icon primary"></i>
+<div class="grid mt-2">
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card styleClass="feature-card indigo">
+      <div class="flex align-items-center gap-3 mb-3">
+        <div class="icon-badge indigo"><i class="pi pi-th-large"></i></div>
         <div>
-          <div class="stat-value">{{ sectorCount$ | async }}</div>
-          <div class="text-color-secondary">Stock Sectors</div>
+          <div class="card-label">Stock Sectors</div>
+          <div class="card-value">{{ sectorCount$ | async }}</div>
         </div>
       </div>
       <ng-template pTemplate="footer">
-        <p-button label="Manage Sectors" routerLink="/sectors" size="small" />
+        <p-button label="Manage Sectors" routerLink="/sectors" size="small" styleClass="w-full" />
       </ng-template>
     </p-card>
   </div>
 
-  <div class="col-12 md:col-4">
-    <p-card>
-      <div class="flex align-items-center gap-3">
-        <i class="pi pi-chart-line stat-icon green"></i>
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card styleClass="feature-card green">
+      <div class="flex align-items-center gap-3 mb-3">
+        <div class="icon-badge green"><i class="pi pi-chart-line"></i></div>
         <div>
-          <div class="stat-value">Live</div>
-          <div class="text-color-secondary">Price Tracker</div>
+          <div class="card-label">Price Tracker</div>
+          <div class="card-value">Live</div>
         </div>
       </div>
       <ng-template pTemplate="footer">
-        <p-button label="Open Tracker" routerLink="/tracker" severity="success" size="small" />
+        <p-button label="Open Tracker" routerLink="/tracker" severity="success" size="small" styleClass="w-full" />
       </ng-template>
     </p-card>
   </div>
 
-  <div class="col-12 md:col-4">
-    <p-card>
-      <div class="flex align-items-center gap-3">
-        <i class="pi pi-comments stat-icon yellow"></i>
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card styleClass="feature-card yellow">
+      <div class="flex align-items-center gap-3 mb-3">
+        <div class="icon-badge yellow"><i class="pi pi-comments"></i></div>
         <div>
-          <div class="stat-value">AI</div>
-          <div class="text-color-secondary">News Sentiment</div>
+          <div class="card-label">News Sentiment</div>
+          <div class="card-value">AI</div>
         </div>
       </div>
       <ng-template pTemplate="footer">
-        <p-button label="Analyze News" routerLink="/sentiment" severity="warn" size="small" />
+        <p-button label="Analyze News" routerLink="/sentiment" severity="warn" size="small" styleClass="w-full" />
       </ng-template>
     </p-card>
   </div>
 
-  <div class="col-12 md:col-4">
-    <p-card>
-      <div class="flex align-items-center gap-3">
-        <i class="pi pi-wallet stat-icon purple"></i>
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card styleClass="feature-card purple">
+      <div class="flex align-items-center gap-3 mb-3">
+        <div class="icon-badge purple"><i class="pi pi-wallet"></i></div>
         <div>
-          <div class="stat-value">P&amp;L</div>
-          <div class="text-color-secondary">Portfolio Dashboard</div>
+          <div class="card-label">Portfolio</div>
+          <div class="card-value">P&amp;L</div>
         </div>
       </div>
       <ng-template pTemplate="footer">
-        <p-button label="View Portfolio" routerLink="/portfolio" severity="help" size="small" />
+        <p-button label="View Portfolio" routerLink="/portfolio" severity="help" size="small" styleClass="w-full" />
       </ng-template>
     </p-card>
   </div>
