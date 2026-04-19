@@ -8,7 +8,13 @@
         <div class="icon-badge indigo"><i class="pi pi-th-large"></i></div>
         <div>
           <div class="card-label">Stock Sectors</div>
-          <div class="card-value">{{ sectorCount$ | async }}</div>
+          <div class="card-value">
+            @if (sectorsLoading$ | async) {
+              <p-skeleton height="1.75rem" width="3rem" />
+            } @else {
+              {{ sectorCount$ | async }}
+            }
+          </div>
         </div>
       </div>
       <ng-template pTemplate="footer">

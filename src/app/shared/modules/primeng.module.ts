@@ -13,8 +13,11 @@ import { MenubarModule } from 'primeng/menubar';
 import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 
 const MODULES = [
   BadgeModule,
@@ -31,8 +34,11 @@ const MODULES = [
   MessageModule,
   PasswordModule,
   ProgressSpinnerModule,
+  SkeletonModule,
   TableModule,
   TagModule,
+  ToastModule,
+  TooltipModule,
 ];
 
 @NgModule({

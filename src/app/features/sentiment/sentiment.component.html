@@ -21,14 +21,20 @@
 }
 
 @if (loading) {
-  <div class="flex justify-content-center py-5">
-    <p-progressSpinner />
-  </div>
+  <p-card>
+    <p-skeleton height="2.75rem" styleClass="mb-2" />
+    @for (i of [1,2,3,4,5,6,7,8]; track i) {
+      <div class="flex gap-3 align-items-center mb-2">
+        <p-skeleton height="2.25rem" styleClass="flex-1" />
+        <p-skeleton height="2.25rem" width="7rem" />
+      </div>
+    }
+  </p-card>
 }
 
 @if (results.length > 0) {
   <p-card [header]="'News for ' + analyzedTicker">
-    <p-table [value]="results" [paginator]="results.length > 10" [rows]="10">
+    <p-table [value]="results" [paginator]="results.length > 10" [rows]="10" responsiveLayout="scroll">
       <ng-template pTemplate="header">
         <tr>
           <th>Article</th>
@@ -51,7 +57,17 @@
 }
 
 @if (!loading && results.length === 0 && analyzedTicker) {
-  <div class="text-center text-color-secondary py-4">
-    No news articles found for "{{ analyzedTicker }}".
+  <div class="empty-state">
+    <i class="pi pi-inbox empty-state-icon"></i>
+    <div class="empty-state-title">No articles found</div>
+    <p class="empty-state-text">No news articles were found for "{{ analyzedTicker }}". Try a different ticker symbol.</p>
+  </div>
+}
+
+@if (!loading && !analyzedTicker) {
+  <div class="empty-state">
+    <i class="pi pi-comments empty-state-icon"></i>
+    <div class="empty-state-title">Analyse news sentiment</div>
+    <p class="empty-state-text">Enter a ticker symbol above to fetch and analyse the latest news headlines.</p>
   </div>
 }

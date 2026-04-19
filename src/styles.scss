@@ -235,3 +235,111 @@ h2 {
 .text-color-secondary {
   color: rgba(255, 255, 255, 0.5) !important;
 }
+
+/* ── Empty states ── */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state-icon {
+  font-size: 3.5rem;
+  color: rgba(255, 255, 255, 0.1);
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.empty-state-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-text {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.9rem;
+  margin: 0 auto 1.25rem;
+  max-width: 340px;
+  line-height: 1.6;
+}
+
+/* ── Skeletons ── */
+.p-skeleton {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border-radius: 8px !important;
+
+  &::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    ) !important;
+  }
+}
+
+/* ── Toast overrides ── */
+.p-toast {
+  .p-toast-message {
+    background: #1a1f35 !important;
+    border: 1px solid rgba(99, 102, 241, 0.25) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+
+    .p-toast-message-text {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .p-toast-summary {
+      font-weight: 700 !important;
+    }
+
+    .p-toast-detail {
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+  }
+}
+
+/* ── Mobile responsive ── */
+@media (max-width: 768px) {
+  .app-content {
+    padding: 1rem !important;
+  }
+
+  .page-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .search-bar {
+    max-width: 100% !important;
+    flex-wrap: wrap;
+
+    input {
+      min-width: 0;
+    }
+
+    .p-button {
+      width: 100%;
+    }
+  }
+
+  /* Navbar mobile hamburger */
+  .p-menubar {
+    padding: 0.5rem 1rem !important;
+
+    .p-menubar-root-list {
+      background: rgba(10, 14, 26, 0.97) !important;
+      border: 1px solid rgba(99, 102, 241, 0.2) !important;
+      border-radius: 12px !important;
+      padding: 0.5rem !important;
+    }
+  }
+
+  /* Stack grid cols on small screens */
+  .grid > [class*='col-12'] {
+    padding: 0.4rem !important;
+  }
+}

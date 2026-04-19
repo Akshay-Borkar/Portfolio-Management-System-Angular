@@ -89,6 +89,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   openAddInvestmentDialog(): void {
     this.investmentForm.reset();
+    this.store.dispatch(loadPortfolio());
     this.showAddInvestmentDialog = true;
   }
 

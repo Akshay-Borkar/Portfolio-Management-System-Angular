@@ -3,6 +3,7 @@ import { provideRouter, withPreloading, PreloadAllModules } from '@angular/route
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
+import { MessageService } from 'primeng/api';
 import Aura from '@primeng/themes/aura';
 import { provideStore, Store } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
@@ -17,6 +18,7 @@ import { stockSectorReducer } from './store/stock-sector/stock-sector.reducer';
 import { StockSectorEffects } from './store/stock-sector/stock-sector.effects';
 import { portfolioReducer } from './store/portfolio/portfolio.reducer';
 import { PortfolioEffects } from './store/portfolio/portfolio.effects';
+import { NotificationEffects } from './store/notification/notification.effects';
 import { loadUserFromStorage } from './store/auth/auth.actions';
 
 function initializeApp(store: Store) {
@@ -34,10 +36,11 @@ export const appConfig: ApplicationConfig = {
       stockSector: stockSectorReducer,
       portfolio: portfolioReducer,
     }),
-    provideEffects([AuthEffects, StockSectorEffects, PortfolioEffects]),
+    provideEffects([AuthEffects, StockSectorEffects, PortfolioEffects, NotificationEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: environment.production }),
     { provide: JWT_OPTIONS, useValue: {} },
     JwtHelperService,
+    MessageService,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

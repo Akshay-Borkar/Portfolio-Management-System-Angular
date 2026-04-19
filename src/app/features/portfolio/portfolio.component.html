@@ -1,6 +1,6 @@
 <div class="page-header">
   <h2 class="m-0">Portfolio Dashboard</h2>
-  <div class="flex gap-2">
+  <div class="flex gap-2 flex-wrap">
     <p-button label="Add Stock" icon="pi pi-plus" size="small" (onClick)="showAddStockDialog = true" />
     <p-button label="Add Investment" icon="pi pi-wallet" size="small" severity="success"
       (onClick)="openAddInvestmentDialog()" />
@@ -10,8 +10,38 @@
 </div>
 
 @if (loading$ | async) {
-  <div class="flex justify-content-center py-6">
-    <p-progressSpinner strokeWidth="4" />
+  <!-- Summary card skeletons -->
+  <div class="grid mb-4">
+    @for (i of [1,2,3,4]; track i) {
+      <div class="col-12 md:col-3">
+        <p-card styleClass="h-full">
+          <p-skeleton height="0.85rem" width="7rem" styleClass="mb-3" />
+          <p-skeleton height="2rem" width="9rem" />
+        </p-card>
+      </div>
+    }
+  </div>
+  <!-- Holdings + chart skeletons -->
+  <div class="grid">
+    <div class="col-12 lg:col-8">
+      <p-card header="Holdings">
+        <p-skeleton height="2.75rem" styleClass="mb-2" />
+        @for (i of [1,2,3,4,5,6,7]; track i) {
+          <p-skeleton height="2.25rem" styleClass="mb-1" />
+        }
+      </p-card>
+    </div>
+    <div class="col-12 lg:col-4">
+      <p-card header="Sector Allocation">
+        <p-skeleton shape="circle" size="200px" styleClass="mx-auto mb-4" />
+        @for (i of [1,2,3,4]; track i) {
+          <div class="flex justify-content-between mb-2">
+            <p-skeleton height="1rem" width="8rem" />
+            <p-skeleton height="1rem" width="3rem" />
+          </div>
+        }
+      </p-card>
+    </div>
   </div>
 } @else {
   @if (summary$ | async; as summary) {
@@ -87,8 +117,13 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td colspan="9" class="text-center text-color-secondary py-4">
-                  No holdings found. Add a stock and investment to get started.
+                <td colspan="9">
+                  <div class="empty-state">
+                    <i class="pi pi-chart-bar empty-state-icon"></i>
+                    <div class="empty-state-title">No holdings yet</div>
+                    <p class="empty-state-text">Add a stock and record an investment to start tracking your P&amp;L.</p>
+                    <p-button label="Add Stock" icon="pi pi-plus" size="small" (onClick)="showAddStockDialog = true" />
+                  </div>
                 </td>
               </tr>
             </ng-template>
@@ -110,7 +145,11 @@
                 }
               </div>
             } @else {
-              <div class="text-center text-color-secondary py-4">No sector data yet.</div>
+              <div class="empty-state">
+                <i class="pi pi-chart-pie empty-state-icon"></i>
+                <div class="empty-state-title">No allocation data</div>
+                <p class="empty-state-text">Record investments to see your sector breakdown.</p>
+              </div>
             }
           }
         </p-card>
@@ -120,13 +159,10 @@
   } @else {
     <p-card>
       <div class="empty-state">
-        <i class="pi pi-chart-pie empty-icon"></i>
-        <p class="text-color-secondary">
-          Your portfolio is empty. Add a stock and record your first investment to see your P&amp;L dashboard.
-        </p>
-        <div class="flex justify-content-center gap-2 mt-3">
-          <p-button label="Add Stock" icon="pi pi-plus" (onClick)="showAddStockDialog = true" />
-        </div>
+        <i class="pi pi-wallet empty-state-icon"></i>
+        <div class="empty-state-title">Your portfolio is empty</div>
+        <p class="empty-state-text">Add a stock and record your first investment to see your P&amp;L dashboard.</p>
+        <p-button label="Add Stock" icon="pi pi-plus" (onClick)="showAddStockDialog = true" />
       </div>
     </p-card>
   }
