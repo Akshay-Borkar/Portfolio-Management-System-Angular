@@ -13,6 +13,8 @@ import {
   selectSectorAllocations,
 } from '../../store/portfolio/portfolio.selectors';
 import { selectAllSectors } from '../../store/stock-sector/stock-sector.selectors';
+import { InvestmentHistoryDTO } from '../../core/models/portfolio.models';
+import { PortfolioService } from '../../core/services/portfolio.service';
 
 @Component({
   selector: 'app-portfolio',
@@ -24,6 +26,7 @@ import { selectAllSectors } from '../../store/stock-sector/stock-sector.selector
 export class PortfolioComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
+  private readonly portfolioService = inject(PortfolioService);
   private readonly destroy$ = new Subject<void>();
 
   readonly summary$ = this.store.select(selectPortfolioSummary);
@@ -59,6 +62,11 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   showAddInvestmentDialog = false;
   readonly today = new Date();
 
+  // Investment history state
+  expandedStockId: string | null = null;
+  investmentHistory: InvestmentHistoryDTO[] = [];
+  historyLoading = false;
+
   readonly stockForm = this.fb.group({
     ticker: ['', [Validators.required, Validators.maxLength(20)]],
     stockName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -89,8 +97,27 @@ export class PortfolioComponent implements OnInit, OnDestroy {
 
   openAddInvestmentDialog(): void {
     this.investmentForm.reset();
-    this.store.dispatch(loadPortfolio());
     this.showAddInvestmentDialog = true;
+  }
+
+  toggleHistory(stockId: string): void {
+    if (this.expandedStockId === stockId) {
+      this.expandedStockId = null;
+      this.investmentHistory = [];
+      return;
+    }
+    this.expandedStockId = stockId;
+    this.historyLoading = true;
+    this.portfolioService.getInvestmentsByStock(stockId).subscribe({
+      next: (history) => {
+        this.investmentHistory = history;
+        this.historyLoading = false;
+      },
+      error: () => {
+        this.investmentHistory = [];
+        this.historyLoading = false;
+      },
+    });
   }
 
   submitAddStock(): void {

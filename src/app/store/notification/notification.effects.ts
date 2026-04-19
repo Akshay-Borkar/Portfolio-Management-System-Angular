@@ -19,6 +19,7 @@ import {
   loadSectorsFailure,
 } from '../stock-sector/stock-sector.actions';
 import { registerSuccess, registerFailure } from '../auth/auth.actions';
+import { createAlertSuccess, createAlertFailure, deleteAlertSuccess, deleteAlertFailure } from '../alert/alert.actions';
 
 @Injectable()
 export class NotificationEffects {
@@ -120,6 +121,34 @@ export class NotificationEffects {
     () => this.actions$.pipe(
       ofType(registerFailure),
       tap(({ error }) => this.error('Registration Failed', error))
+    ), { dispatch: false }
+  );
+
+  createAlertSuccess$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(createAlertSuccess),
+      tap(() => this.success('Alert Created', 'You will be notified when the price is reached.'))
+    ), { dispatch: false }
+  );
+
+  createAlertFailure$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(createAlertFailure),
+      tap(({ error }) => this.error('Failed to Create Alert', error))
+    ), { dispatch: false }
+  );
+
+  deleteAlertSuccess$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(deleteAlertSuccess),
+      tap(() => this.success('Alert Deleted', 'The price alert has been removed.'))
+    ), { dispatch: false }
+  );
+
+  deleteAlertFailure$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(deleteAlertFailure),
+      tap(({ error }) => this.error('Failed to Delete Alert', error))
     ), { dispatch: false }
   );
 

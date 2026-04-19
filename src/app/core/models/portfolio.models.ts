@@ -41,6 +41,14 @@ export interface AddInvestmentRequest {
   investmentDate: string;
 }
 
+export interface InvestmentHistoryDTO {
+  id: string;
+  investedAmount: number;
+  buyingPrice: number;
+  quantity: number;
+  investmentDate: string;
+}
+
 export interface PortfolioState {
   summary: PortfolioSummaryDTO | null;
   loading: boolean;

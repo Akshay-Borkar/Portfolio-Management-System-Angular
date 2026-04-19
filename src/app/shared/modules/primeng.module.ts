@@ -7,6 +7,7 @@ import { ChartModule } from 'primeng/chart';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenubarModule } from 'primeng/menubar';
@@ -28,6 +29,7 @@ const MODULES = [
   ConfirmDialogModule,
   DialogModule,
   DropdownModule,
+  SelectModule,
   InputNumberModule,
   InputTextModule,
   MenubarModule,

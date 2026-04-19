@@ -32,3 +32,26 @@
   display: block;
   margin-bottom: 1rem;
 }
+
+/* Investment history expansion panel */
+.history-row > td {
+  padding: 0 !important;
+  background: rgba(99, 102, 241, 0.04) !important;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15) !important;
+}
+
+.history-panel {
+  padding: 1rem 1.5rem 1rem 3rem;
+}
+
+.history-table .p-datatable-thead > tr > th {
+  background: rgba(99, 102, 241, 0.06) !important;
+  font-size: 0.75rem !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+.history-table .p-datatable-tbody > tr > td {
+  font-size: 0.8rem !important;
+  padding: 0.5rem 0.75rem !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}

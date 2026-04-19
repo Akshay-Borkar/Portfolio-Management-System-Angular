@@ -83,9 +83,11 @@
       <div class="col-12 lg:col-8">
         <p-card header="Holdings">
           <p-table [value]="summary.holdings" [paginator]="true" [rows]="8"
-            [rowsPerPageOptions]="[8, 15, 25]" responsiveLayout="scroll" styleClass="p-datatable-sm">
+            [rowsPerPageOptions]="[8, 15, 25]" responsiveLayout="scroll" styleClass="p-datatable-sm"
+            dataKey="stockId">
             <ng-template pTemplate="header">
               <tr>
+                <th style="width:3rem"></th>
                 <th pSortableColumn="ticker">Ticker <p-sortIcon field="ticker" /></th>
                 <th>Stock</th>
                 <th>Sector</th>
@@ -93,12 +95,19 @@
                 <th pSortableColumn="avgBuyingPrice">Avg Buy <p-sortIcon field="avgBuyingPrice" /></th>
                 <th pSortableColumn="currentPrice">LTP <p-sortIcon field="currentPrice" /></th>
                 <th pSortableColumn="investedAmount">Invested <p-sortIcon field="investedAmount" /></th>
-                <th pSortableColumn="currentValue">Value <p-sortIcon field="currentValue" /></th>
                 <th pSortableColumn="pnL">P&amp;L <p-sortIcon field="pnL" /></th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-h>
               <tr>
+                <td>
+                  <p-button
+                    [icon]="expandedStockId === h.stockId ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                    [text]="true" size="small" severity="secondary"
+                    (onClick)="toggleHistory(h.stockId)"
+                    pTooltip="Investment history"
+                  />
+                </td>
                 <td><span class="font-bold">{{ h.ticker }}</span></td>
                 <td>{{ h.stockName }}</td>
                 <td><p-tag [value]="h.sectorName" severity="info" /></td>
@@ -106,7 +115,6 @@
                 <td>{{ h.avgBuyingPrice | number:'1.2-2' }}</td>
                 <td>{{ h.currentPrice | number:'1.2-2' }}</td>
                 <td>{{ h.investedAmount | number:'1.0-0' }}</td>
-                <td>{{ h.currentValue | number:'1.0-0' }}</td>
                 <td>
                   <span [ngClass]="h.pnL >= 0 ? 'gain' : 'loss'" class="font-semibold">
                     {{ h.pnL >= 0 ? '+' : '' }}{{ h.pnL | number:'1.0-0' }}
@@ -114,6 +122,46 @@
                   </span>
                 </td>
               </tr>
+              @if (expandedStockId === h.stockId) {
+                <tr class="history-row">
+                  <td colspan="9">
+                    <div class="history-panel">
+                      <div class="flex align-items-center gap-2 mb-2">
+                        <i class="pi pi-history text-color-secondary"></i>
+                        <span class="font-semibold text-sm">Investment History — {{ h.ticker }}</span>
+                      </div>
+                      @if (historyLoading) {
+                        <div class="flex flex-column gap-1">
+                          @for (i of [1,2,3]; track i) {
+                            <p-skeleton height="1.75rem" />
+                          }
+                        </div>
+                      } @else if (investmentHistory.length > 0) {
+                        <p-table [value]="investmentHistory" styleClass="p-datatable-sm history-table">
+                          <ng-template pTemplate="header">
+                            <tr>
+                              <th>Date</th>
+                              <th>Buying Price</th>
+                              <th>Qty Purchased</th>
+                              <th>Amount Invested</th>
+                            </tr>
+                          </ng-template>
+                          <ng-template pTemplate="body" let-inv>
+                            <tr>
+                              <td>{{ inv.investmentDate | date:'dd MMM yyyy' }}</td>
+                              <td>{{ inv.buyingPrice | number:'1.2-2' }}</td>
+                              <td>{{ inv.quantity | number:'1.4-4' }}</td>
+                              <td>{{ inv.investedAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+                            </tr>
+                          </ng-template>
+                        </p-table>
+                      } @else {
+                        <p class="text-color-secondary text-sm m-0">No investment records found.</p>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>

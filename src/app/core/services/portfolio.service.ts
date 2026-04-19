@@ -5,8 +5,10 @@ import { environment } from '../../../environments/environment';
 import {
   AddInvestmentRequest,
   AddStockRequest,
+  InvestmentHistoryDTO,
   PortfolioSummaryDTO,
 } from '../models/portfolio.models';
+import { OhlcvBar } from '../models/stock-market-data.models';
 
 @Injectable({ providedIn: 'root' })
 export class PortfolioService {
@@ -23,5 +25,15 @@ export class PortfolioService {
 
   addInvestment(body: AddInvestmentRequest): Observable<{ id: string }> {
     return this.http.post<{ id: string }>(`${this.base}/investment`, body);
+  }
+
+  getInvestmentsByStock(stockId: string): Observable<InvestmentHistoryDTO[]> {
+    return this.http.get<InvestmentHistoryDTO[]>(`${this.base}/investments/${stockId}`);
+  }
+
+  getChartData(ticker: string, interval: string, range: string): Observable<OhlcvBar[]> {
+    return this.http.get<OhlcvBar[]>(
+      `${this.base}/chart/${ticker}?interval=${interval}&range=${range}`
+    );
   }
 }

@@ -1,0 +1,122 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Price Alerts</h2>
+      <p class="page-subtitle">Get notified when a stock hits your target price</p>
+    </div>
+    <p-button label="New Alert" icon="pi pi-plus" (onClick)="openDialog()" />
+  </div>
+
+  @if (loading$ | async) {
+    <p-card>
+      @for (i of [1,2,3,4]; track i) {
+        <div class="skeleton-row">
+          <p-skeleton width="6rem" height="1.25rem" />
+          <p-skeleton width="4rem" height="1.25rem" />
+          <p-skeleton width="5rem" height="1.25rem" />
+          <p-skeleton width="4rem" height="1.25rem" />
+          <p-skeleton width="2rem" height="1.25rem" />
+        </div>
+      }
+    </p-card>
+  } @else {
+    @if ((alerts$ | async)?.length === 0) {
+      <div class="empty-state">
+        <i class="pi pi-bell empty-state-icon"></i>
+        <h3 class="empty-state-title">No alerts set</h3>
+        <p class="empty-state-text">Create a price alert to get notified when a stock reaches your target.</p>
+        <p-button label="Create First Alert" icon="pi pi-plus" (onClick)="openDialog()" />
+      </div>
+    } @else {
+      <p-card>
+        <p-table [value]="(alerts$ | async) ?? []" [tableStyle]="{ 'min-width': '40rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Ticker</th>
+              <th>Condition</th>
+              <th>Target Price</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-alert>
+            <tr [class.triggered-row]="alert.isTriggered">
+              <td><strong>{{ alert.ticker }}</strong></td>
+              <td>
+                <span [class]="alert.condition === 'Above' ? 'badge-gain' : 'badge-loss'">
+                  {{ alert.condition }}
+                </span>
+              </td>
+              <td>{{ alert.targetPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+              <td>
+                @if (alert.isTriggered) {
+                  <span class="status-triggered"><i class="pi pi-check-circle"></i> Triggered</span>
+                } @else {
+                  <span class="status-active"><i class="pi pi-clock"></i> Active</span>
+                }
+              </td>
+              <td class="text-color-secondary text-sm">{{ alert.dateCreated | date:'mediumDate' }}</td>
+              <td>
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  size="small"
+                  pTooltip="Delete alert"
+                  tooltipPosition="left"
+                  (onClick)="deleteAlert(alert)"
+                />
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    }
+  }
+</div>
+
+<p-dialog
+  header="New Price Alert"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '26rem' }"
+  [draggable]="false"
+>
+  <div class="dialog-form">
+    <div class="form-field">
+      <label>Ticker Symbol</label>
+      <input
+        pInputText
+        [(ngModel)]="form.ticker"
+        placeholder="e.g. AAPL"
+        style="text-transform: uppercase"
+      />
+    </div>
+    <div class="form-field">
+      <label>Condition</label>
+      <p-select
+        [options]="conditionOptions"
+        [(ngModel)]="form.condition"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full"
+      />
+    </div>
+    <div class="form-field">
+      <label>Target Price (USD)</label>
+      <p-inputnumber
+        [(ngModel)]="form.targetPrice"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+        [minFractionDigits]="2"
+        styleClass="w-full"
+      />
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="showDialog = false" />
+    <p-button label="Create Alert" icon="pi pi-bell" (onClick)="submit()" />
+  </ng-template>
+</p-dialog>
