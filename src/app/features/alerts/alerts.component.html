@@ -76,11 +76,13 @@
   }
 </div>
 
+<p-confirmDialog styleClass="confirm-dialog" />
+
 <p-dialog
   header="New Price Alert"
   [(visible)]="showDialog"
   [modal]="true"
-  [style]="{ width: '26rem' }"
+  styleClass="alert-dialog"
   [draggable]="false"
 >
   <div class="dialog-form">
@@ -90,7 +92,7 @@
         pInputText
         [(ngModel)]="form.ticker"
         placeholder="e.g. AAPL"
-        style="text-transform: uppercase"
+        class="ticker-input"
       />
     </div>
     <div class="form-field">

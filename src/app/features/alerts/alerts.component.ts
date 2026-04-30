@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { ConfirmationService } from 'primeng/api';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { selectAllAlerts, selectAlertLoading } from '../../store/alert/alert.selectors';
 import * as AlertActions from '../../store/alert/alert.actions';
@@ -9,11 +10,13 @@ import { AlertDTO, CreateAlertRequest } from '../../core/models/alert.models';
   selector: 'app-alerts',
   standalone: true,
   imports: [SharedModule],
+  providers: [ConfirmationService],
   templateUrl: './alerts.component.html',
   styleUrl: './alerts.component.css',
 })
 export class AlertsComponent implements OnInit {
   private readonly store = inject(Store);
+  private readonly confirmationService = inject(ConfirmationService);
 
   readonly alerts$ = this.store.select(selectAllAlerts);
   readonly loading$ = this.store.select(selectAlertLoading);
@@ -42,6 +45,14 @@ export class AlertsComponent implements OnInit {
   }
 
   deleteAlert(alert: AlertDTO): void {
-    this.store.dispatch(AlertActions.deleteAlert({ alertId: alert.id }));
+    this.confirmationService.confirm({
+      message: `Delete the <strong>${alert.ticker}</strong> alert (${alert.condition} ${alert.targetPrice})?`,
+      header: 'Delete Alert',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Delete',
+      rejectLabel: 'Cancel',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => this.store.dispatch(AlertActions.deleteAlert({ alertId: alert.id })),
+    });
   }
 }

@@ -80,3 +80,15 @@
 .form-field .p-inputtext {
   width: 100%;
 }
+
+.ticker-input {
+  text-transform: uppercase;
+}
+
+:host ::ng-deep .alert-dialog {
+  width: 26rem;
+}
+
+:host ::ng-deep .confirm-dialog {
+  width: 22rem;
+}
