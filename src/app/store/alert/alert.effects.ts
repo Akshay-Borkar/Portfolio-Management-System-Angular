@@ -1,25 +1,38 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { AlertService } from '../../core/services/alert.service';
 import * as AlertActions from './alert.actions';
+import { selectAlertPage, selectAlertPageSize } from './alert.selectors';
 
 @Injectable()
 export class AlertEffects {
   private readonly actions$ = inject(Actions);
   private readonly alertService = inject(AlertService);
+  private readonly store = inject(Store);
 
   loadAlerts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AlertActions.loadAlerts),
-      switchMap(() =>
-        this.alertService.getAlerts().pipe(
-          map((alerts) => AlertActions.loadAlertsSuccess({ alerts })),
+      withLatestFrom(this.store.select(selectAlertPage), this.store.select(selectAlertPageSize)),
+      switchMap(([action, currentPage, currentPageSize]) => {
+        const page = action.page ?? currentPage;
+        const pageSize = action.pageSize ?? currentPageSize;
+        return this.alertService.getAlerts(page, pageSize).pipe(
+          map((result) =>
+            AlertActions.loadAlertsSuccess({
+              alerts: result.items,
+              totalCount: result.totalCount,
+              page: result.page,
+              pageSize: result.pageSize,
+            })
+          ),
           catchError((err) =>
             of(AlertActions.loadAlertsFailure({ error: err?.error?.message ?? 'Failed to load alerts' }))
           )
-        )
-      )
+        );
+      })
     )
   );
 
@@ -40,7 +53,7 @@ export class AlertEffects {
   refreshAfterCreate$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AlertActions.createAlertSuccess),
-      map(() => AlertActions.loadAlerts())
+      map(() => AlertActions.loadAlerts({}))
     )
   );
 

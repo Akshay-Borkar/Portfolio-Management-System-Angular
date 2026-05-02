@@ -12,6 +12,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenubarModule } from 'primeng/menubar';
 import { MessageModule } from 'primeng/message';
+import { PaginatorModule } from 'primeng/paginator';
 import { PasswordModule } from 'primeng/password';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -34,6 +35,7 @@ const MODULES = [
   InputTextModule,
   MenubarModule,
   MessageModule,
+  PaginatorModule,
   PasswordModule,
   ProgressSpinnerModule,
   SkeletonModule,

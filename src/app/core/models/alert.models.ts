@@ -15,6 +15,9 @@ export interface CreateAlertRequest {
 
 export interface AlertState {
   alerts: AlertDTO[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
   loading: boolean;
   error: string | null;
 }

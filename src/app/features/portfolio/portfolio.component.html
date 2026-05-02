@@ -155,6 +155,15 @@
                             </tr>
                           </ng-template>
                         </p-table>
+                        @if (historyTotalCount > historyPageSize) {
+                          <p-paginator
+                            [rows]="historyPageSize"
+                            [totalRecords]="historyTotalCount"
+                            [first]="(historyPage - 1) * historyPageSize"
+                            (onPageChange)="onHistoryPageChange($event)"
+                            styleClass="history-paginator"
+                          />
+                        }
                       } @else {
                         <p class="text-color-secondary text-sm m-0">No investment records found.</p>
                       }

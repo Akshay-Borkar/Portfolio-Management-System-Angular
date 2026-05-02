@@ -1,8 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 import { AlertDTO, CreateAlertRequest } from '../../core/models/alert.models';
 
-export const loadAlerts = createAction('[Alert] Load Alerts');
-export const loadAlertsSuccess = createAction('[Alert] Load Alerts Success', props<{ alerts: AlertDTO[] }>());
+export const loadAlerts = createAction('[Alert] Load Alerts', props<{ page?: number; pageSize?: number }>());
+export const loadAlertsSuccess = createAction(
+  '[Alert] Load Alerts Success',
+  props<{ alerts: AlertDTO[]; totalCount: number; page: number; pageSize: number }>()
+);
 export const loadAlertsFailure = createAction('[Alert] Load Alerts Failure', props<{ error: string }>());
 
 export const createAlert = createAction('[Alert] Create Alert', props<{ request: CreateAlertRequest }>());

@@ -4,6 +4,9 @@ import * as AlertActions from './alert.actions';
 
 export const initialState: AlertState = {
   alerts: [],
+  totalCount: 0,
+  page: 1,
+  pageSize: 10,
   loading: false,
   error: null,
 };
@@ -14,8 +17,8 @@ export const alertReducer = createReducer(
   on(AlertActions.loadAlerts, AlertActions.createAlert, (state) =>
     ({ ...state, loading: true, error: null })),
 
-  on(AlertActions.loadAlertsSuccess, (state, { alerts }) =>
-    ({ ...state, alerts, loading: false })),
+  on(AlertActions.loadAlertsSuccess, (state, { alerts, totalCount, page, pageSize }) =>
+    ({ ...state, alerts, totalCount, page, pageSize, loading: false })),
 
   on(AlertActions.createAlertSuccess, (state) =>
     ({ ...state, loading: false })),
@@ -23,6 +26,7 @@ export const alertReducer = createReducer(
   on(AlertActions.deleteAlertSuccess, (state, { alertId }) => ({
     ...state,
     alerts: state.alerts.filter((a) => a.id !== alertId),
+    totalCount: state.totalCount - 1,
   })),
 
   on(

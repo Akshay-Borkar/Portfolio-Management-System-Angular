@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { PaginatorState } from 'primeng/paginator';
 import { Store } from '@ngrx/store';
 import { map, Subject } from 'rxjs';
 import { SharedModule } from '../../shared/modules/shared.module';
@@ -65,6 +66,9 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   // Investment history state
   expandedStockId: string | null = null;
   investmentHistory: InvestmentHistoryDTO[] = [];
+  historyTotalCount = 0;
+  historyPage = 1;
+  readonly historyPageSize = 5;
   historyLoading = false;
 
   readonly stockForm = this.fb.group({
@@ -104,17 +108,34 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     if (this.expandedStockId === stockId) {
       this.expandedStockId = null;
       this.investmentHistory = [];
+      this.historyTotalCount = 0;
+      this.historyPage = 1;
       return;
     }
     this.expandedStockId = stockId;
+    this.historyPage = 1;
+    this.loadHistory(stockId, 1);
+  }
+
+  onHistoryPageChange(event: PaginatorState): void {
+    if (!this.expandedStockId) return;
+    const first = event.first ?? 0;
+    const rows = event.rows ?? this.historyPageSize;
+    this.historyPage = Math.floor(first / rows) + 1;
+    this.loadHistory(this.expandedStockId, this.historyPage);
+  }
+
+  private loadHistory(stockId: string, page: number): void {
     this.historyLoading = true;
-    this.portfolioService.getInvestmentsByStock(stockId).subscribe({
-      next: (history) => {
-        this.investmentHistory = history;
+    this.portfolioService.getInvestmentsByStock(stockId, page, this.historyPageSize).subscribe({
+      next: (result) => {
+        this.investmentHistory = result.items;
+        this.historyTotalCount = result.totalCount;
         this.historyLoading = false;
       },
       error: () => {
         this.investmentHistory = [];
+        this.historyTotalCount = 0;
         this.historyLoading = false;
       },
     });
