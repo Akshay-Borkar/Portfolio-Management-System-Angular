@@ -51,9 +51,27 @@ export class PortfolioEffects {
     )
   );
 
+  deleteStock$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PortfolioActions.deleteStock),
+      switchMap(({ stockId }) =>
+        this.portfolioService.deleteStock(stockId).pipe(
+          map(() => PortfolioActions.deleteStockSuccess({ stockId })),
+          catchError((err) =>
+            of(PortfolioActions.deleteStockFailure({ error: err?.error?.message ?? 'Failed to delete stock' }))
+          )
+        )
+      )
+    )
+  );
+
   refreshAfterMutation$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(PortfolioActions.addStockSuccess, PortfolioActions.addInvestmentSuccess),
+      ofType(
+        PortfolioActions.addStockSuccess,
+        PortfolioActions.addInvestmentSuccess,
+        PortfolioActions.deleteStockSuccess
+      ),
       map(() => PortfolioActions.loadPortfolio())
     )
   );

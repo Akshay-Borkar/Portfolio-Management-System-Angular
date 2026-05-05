@@ -3,8 +3,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { PaginatorState } from 'primeng/paginator';
 import { Store } from '@ngrx/store';
 import { map, Subject } from 'rxjs';
+import { ConfirmationService } from 'primeng/api';
 import { SharedModule } from '../../shared/modules/shared.module';
-import { loadPortfolio, addStock, addInvestment } from '../../store/portfolio/portfolio.actions';
+import { loadPortfolio, addStock, addInvestment, deleteStock } from '../../store/portfolio/portfolio.actions';
 import { loadSectors } from '../../store/stock-sector/stock-sector.actions';
 import {
   selectPortfolioSummary,
@@ -21,6 +22,7 @@ import { PortfolioService } from '../../core/services/portfolio.service';
   selector: 'app-portfolio',
   standalone: true,
   imports: [SharedModule],
+  providers: [ConfirmationService],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css',
 })
@@ -28,6 +30,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   private readonly portfolioService = inject(PortfolioService);
+  private readonly confirmationService = inject(ConfirmationService);
   private readonly destroy$ = new Subject<void>();
 
   readonly summary$ = this.store.select(selectPortfolioSummary);
@@ -84,6 +87,18 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     buyingPrice: [null as number | null, [Validators.required, Validators.min(0.01)]],
     investmentDate: [null as Date | null, Validators.required],
   });
+
+  confirmDeleteStock(stockId: string, ticker: string): void {
+    this.confirmationService.confirm({
+      message: `Delete <strong>${ticker}</strong> and all its investment history? This cannot be undone.`,
+      header: 'Delete Stock',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Delete',
+      rejectLabel: 'Cancel',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => this.store.dispatch(deleteStock({ stockId })),
+    });
+  }
 
   ngOnInit(): void {
     this.store.dispatch(loadPortfolio());

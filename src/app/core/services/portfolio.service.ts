@@ -28,6 +28,10 @@ export class PortfolioService {
     return this.http.post<{ id: string }>(`${this.base}/investment`, body);
   }
 
+  deleteStock(stockId: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/stock/${stockId}`);
+  }
+
   getInvestmentsByStock(stockId: string, page = 1, pageSize = 5): Observable<PagedResult<InvestmentHistoryDTO>> {
     return this.http.get<PagedResult<InvestmentHistoryDTO>>(`${this.base}/investments/${stockId}`, {
       params: { page, pageSize },

@@ -15,6 +15,7 @@ export const portfolioReducer = createReducer(
     PortfolioActions.loadPortfolio,
     PortfolioActions.addStock,
     PortfolioActions.addInvestment,
+    PortfolioActions.deleteStock,
     (state) => ({ ...state, loading: true, error: null })
   ),
 
@@ -27,6 +28,7 @@ export const portfolioReducer = createReducer(
   on(
     PortfolioActions.addStockSuccess,
     PortfolioActions.addInvestmentSuccess,
+    PortfolioActions.deleteStockSuccess,
     (state) => ({ ...state, loading: false })
   ),
 
@@ -34,6 +36,7 @@ export const portfolioReducer = createReducer(
     PortfolioActions.loadPortfolioFailure,
     PortfolioActions.addStockFailure,
     PortfolioActions.addInvestmentFailure,
+    PortfolioActions.deleteStockFailure,
     (state, { error }) => ({ ...state, loading: false, error })
   )
 );

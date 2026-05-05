@@ -96,6 +96,7 @@
                 <th pSortableColumn="currentPrice">LTP <p-sortIcon field="currentPrice" /></th>
                 <th pSortableColumn="investedAmount">Invested <p-sortIcon field="investedAmount" /></th>
                 <th pSortableColumn="pnL">P&amp;L <p-sortIcon field="pnL" /></th>
+                <th style="width:3rem"></th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-h>
@@ -121,10 +122,21 @@
                     ({{ h.pnLPercent >= 0 ? '+' : '' }}{{ h.pnLPercent | number:'1.1-1' }}%)
                   </span>
                 </td>
+                <td>
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    size="small"
+                    pTooltip="Delete stock"
+                    tooltipPosition="left"
+                    (onClick)="confirmDeleteStock(h.stockId, h.ticker)"
+                  />
+                </td>
               </tr>
               @if (expandedStockId === h.stockId) {
                 <tr class="history-row">
-                  <td colspan="9">
+                  <td colspan="10">
                     <div class="history-panel">
                       <div class="flex align-items-center gap-2 mb-2">
                         <i class="pi pi-history text-color-secondary"></i>
@@ -174,7 +186,7 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td colspan="9">
+                <td colspan="10">
                   <div class="empty-state">
                     <i class="pi pi-chart-bar empty-state-icon"></i>
                     <div class="empty-state-title">No holdings yet</div>
@@ -288,3 +300,5 @@
     </div>
   </form>
 </p-dialog>
+
+<p-confirmDialog styleClass="confirm-dialog" />

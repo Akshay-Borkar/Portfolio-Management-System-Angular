@@ -8,6 +8,8 @@ import {
   addInvestmentSuccess,
   addInvestmentFailure,
   loadPortfolioFailure,
+  deleteStockSuccess,
+  deleteStockFailure,
 } from '../portfolio/portfolio.actions';
 import {
   createSectorSuccess,
@@ -121,6 +123,20 @@ export class NotificationEffects {
     () => this.actions$.pipe(
       ofType(registerFailure),
       tap(({ error }) => this.error('Registration Failed', error))
+    ), { dispatch: false }
+  );
+
+  deleteStockSuccess$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(deleteStockSuccess),
+      tap(() => this.success('Stock Removed', 'The stock and all its investments have been deleted.'))
+    ), { dispatch: false }
+  );
+
+  deleteStockFailure$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(deleteStockFailure),
+      tap(({ error }) => this.error('Failed to Delete Stock', error))
     ), { dispatch: false }
   );
 

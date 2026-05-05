@@ -34,3 +34,16 @@ export const addInvestmentFailure = createAction(
   '[Portfolio] Add Investment Failure',
   props<{ error: string }>()
 );
+
+export const deleteStock = createAction(
+  '[Portfolio] Delete Stock',
+  props<{ stockId: string }>()
+);
+export const deleteStockSuccess = createAction(
+  '[Portfolio] Delete Stock Success',
+  props<{ stockId: string }>()
+);
+export const deleteStockFailure = createAction(
+  '[Portfolio] Delete Stock Failure',
+  props<{ error: string }>()
+);
