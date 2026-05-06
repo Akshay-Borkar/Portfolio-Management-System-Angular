@@ -4,6 +4,7 @@ import { MenuItem } from 'primeng/api';
 import { SharedModule } from '../../modules/shared.module';
 import { selectCurrentUser } from '../../../store/auth/auth.selectors';
 import { logout } from '../../../store/auth/auth.actions';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +15,7 @@ import { logout } from '../../../store/auth/auth.actions';
 })
 export class NavbarComponent implements OnInit {
   private readonly store = inject(Store);
+  readonly themeService = inject(ThemeService);
 
   readonly currentUser$ = this.store.select(selectCurrentUser);
   menuItems: MenuItem[] = [];

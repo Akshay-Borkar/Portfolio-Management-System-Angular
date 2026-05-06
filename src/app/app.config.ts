@@ -22,9 +22,13 @@ import { NotificationEffects } from './store/notification/notification.effects';
 import { alertReducer } from './store/alert/alert.reducer';
 import { AlertEffects } from './store/alert/alert.effects';
 import { loadUserFromStorage } from './store/auth/auth.actions';
+import { ThemeService } from './core/services/theme.service';
 
-function initializeApp(store: Store) {
-  return () => store.dispatch(loadUserFromStorage());
+function initializeApp(store: Store, theme: ThemeService) {
+  return () => {
+    theme.init();
+    store.dispatch(loadUserFromStorage());
+  };
 }
 
 export const appConfig: ApplicationConfig = {
@@ -47,7 +51,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [Store],
+      deps: [Store, ThemeService],
       multi: true,
     },
   ],
