@@ -29,7 +29,7 @@
       </div>
     } @else {
       <p-card>
-        <p-table [value]="(alerts$ | async) ?? []" [tableStyle]="{ 'min-width': '40rem' }">
+        <p-table [value]="(alerts$ | async) ?? []" [tableStyle]="{ 'min-width': '40rem' }" responsiveLayout="scroll">
           <ng-template pTemplate="header">
             <tr>
               <th>Ticker</th>
@@ -127,6 +127,12 @@
   </div>
   <ng-template pTemplate="footer">
     <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="showDialog = false" />
-    <p-button label="Create Alert" icon="pi pi-bell" (onClick)="submit()" />
+    <p-button
+      label="Create Alert"
+      icon="pi pi-bell"
+      [loading]="(loading$ | async) ?? false"
+      [disabled]="(loading$ | async) ?? false"
+      (onClick)="submit()"
+    />
   </ng-template>
 </p-dialog>

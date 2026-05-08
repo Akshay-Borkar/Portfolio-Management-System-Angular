@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { PaginatorState } from 'primeng/paginator';
 import { Store } from '@ngrx/store';
 import { map, Subject } from 'rxjs';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { loadPortfolio, addStock, addInvestment, deleteStock } from '../../store/portfolio/portfolio.actions';
 import { loadSectors } from '../../store/stock-sector/stock-sector.actions';
@@ -31,6 +31,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly portfolioService = inject(PortfolioService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
   private readonly destroy$ = new Subject<void>();
 
   readonly summary$ = this.store.select(selectPortfolioSummary);
@@ -152,6 +153,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
         this.investmentHistory = [];
         this.historyTotalCount = 0;
         this.historyLoading = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load investment history.' });
       },
     });
   }
