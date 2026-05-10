@@ -15,6 +15,8 @@ export class StockTrackerComponent implements OnInit, OnDestroy {
   private readonly signalRService = inject(SignalRService);
   private sub!: Subscription;
 
+  readonly connectionState = this.signalRService.connectionState;
+
   tickerInput = '';
   subscribedTickers = new Map<string, number | null>();
 

@@ -1,12 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LivePriceUpdate } from '../models/stock-market-data.models';
 
+export type ConnectionState = 'connected' | 'connecting' | 'reconnecting' | 'disconnected';
+
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
   readonly priceUpdates$ = new Subject<LivePriceUpdate>();
+  readonly connectionState = signal<ConnectionState>('disconnected');
 
   private connection: signalR.HubConnection | null = null;
 
@@ -33,7 +36,13 @@ export class SignalRService {
       }
     );
 
+    this.connection.onreconnecting(() => this.connectionState.set('reconnecting'));
+    this.connection.onreconnected(() => this.connectionState.set('connected'));
+    this.connection.onclose(() => this.connectionState.set('disconnected'));
+
+    this.connectionState.set('connecting');
     await this.connection.start();
+    this.connectionState.set('connected');
   }
 
   async stopConnection(): Promise<void> {

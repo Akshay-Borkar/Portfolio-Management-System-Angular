@@ -21,7 +21,7 @@ import {
   loadSectorsFailure,
 } from '../stock-sector/stock-sector.actions';
 import { registerSuccess, registerFailure } from '../auth/auth.actions';
-import { createAlertSuccess, createAlertFailure, deleteAlertSuccess, deleteAlertFailure } from '../alert/alert.actions';
+import { createAlertSuccess, createAlertFailure, deleteAlertSuccess, deleteAlertFailure, loadAlertsFailure } from '../alert/alert.actions';
 
 @Injectable()
 export class NotificationEffects {
@@ -137,6 +137,13 @@ export class NotificationEffects {
     () => this.actions$.pipe(
       ofType(deleteStockFailure),
       tap(({ error }) => this.error('Failed to Delete Stock', error))
+    ), { dispatch: false }
+  );
+
+  loadAlertsFailure$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(loadAlertsFailure),
+      tap(({ error }) => this.error('Failed to Load Alerts', error))
     ), { dispatch: false }
   );
 

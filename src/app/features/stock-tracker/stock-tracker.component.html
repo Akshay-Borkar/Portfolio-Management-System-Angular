@@ -1,4 +1,14 @@
-<h2>Live Stock Tracker</h2>
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Live Stock Tracker</h2>
+    <p class="page-subtitle">Subscribe to tickers to receive real-time price updates</p>
+  </div>
+  <p-tag
+    [value]="connectionState() === 'connected' ? 'Connected' : connectionState() === 'reconnecting' ? 'Reconnecting...' : connectionState() === 'connecting' ? 'Connecting...' : 'Disconnected'"
+    [severity]="connectionState() === 'connected' ? 'success' : connectionState() === 'reconnecting' ? 'warn' : connectionState() === 'connecting' ? 'info' : 'danger'"
+    [icon]="connectionState() === 'connected' ? 'pi pi-wifi' : connectionState() === 'reconnecting' ? 'pi pi-sync' : 'pi pi-times-circle'"
+  />
+</div>
 
 <div class="search-bar">
   <input
