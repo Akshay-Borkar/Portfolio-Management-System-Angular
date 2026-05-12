@@ -31,8 +31,8 @@ export class SignalRService {
 
     this.connection.on(
       'ReceiveStockPrice',
-      (symbol: string, price: string) => {
-        this.priceUpdates$.next({ symbol, price: parseFloat(price) });
+      (symbol: string, price: number) => {
+        this.priceUpdates$.next({ symbol, price });
       }
     );
 
