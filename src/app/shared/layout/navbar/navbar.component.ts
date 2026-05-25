@@ -28,6 +28,7 @@ export class NavbarComponent implements OnInit {
       { label: 'Tracker', icon: 'pi pi-chart-line', routerLink: '/tracker' },
       { label: 'Sentiment', icon: 'pi pi-comments', routerLink: '/sentiment' },
       { label: 'Alerts', icon: 'pi pi-bell', routerLink: '/alerts' },
+      { label: 'AI Chat', icon: 'pi pi-sparkles', routerLink: '/chat' },
     ];
   }
 

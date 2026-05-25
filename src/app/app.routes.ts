@@ -60,6 +60,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/alerts/alerts.component').then((m) => m.AlertsComponent),
       },
+      {
+        path: 'chat',
+        loadComponent: () =>
+          import('./features/chat/chat.component').then((m) => m.ChatComponent),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },
