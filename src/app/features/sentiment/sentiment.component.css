@@ -12,3 +12,47 @@
 .sentiment-col {
   width: 130px;
 }
+
+/* Sentiment badges — pill style, glassy, dark-theme friendly */
+:host ::ng-deep .sentiment-positive.p-tag,
+:host ::ng-deep .sentiment-negative.p-tag,
+:host ::ng-deep .sentiment-neutral.p-tag,
+:host ::ng-deep .sentiment-unknown.p-tag {
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: filter 0.2s ease;
+}
+
+:host ::ng-deep .sentiment-positive.p-tag:hover,
+:host ::ng-deep .sentiment-negative.p-tag:hover,
+:host ::ng-deep .sentiment-neutral.p-tag:hover {
+  filter: brightness(1.15);
+}
+
+:host ::ng-deep .sentiment-positive.p-tag {
+  background: linear-gradient(135deg, #065f46, #047857);
+  color: #6ee7b7;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+:host ::ng-deep .sentiment-negative.p-tag {
+  background: linear-gradient(135deg, #7f1d1d, #991b1b);
+  color: #fca5a5;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
+}
+
+:host ::ng-deep .sentiment-neutral.p-tag {
+  background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+  color: #93c5fd;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+:host ::ng-deep .sentiment-unknown.p-tag {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: #94a3b8;
+  box-shadow: none;
+}

@@ -11,7 +11,7 @@ export class SentimentService {
 
   analyzeNews(ticker: string): Observable<SentimentResult[]> {
     return this.http.get<SentimentResult[]>(
-      `${this.base}/analyze-yahoo-news/${encodeURIComponent(ticker)}`
+      `${this.base}/analyze/${encodeURIComponent(ticker)}`
     );
   }
 }
