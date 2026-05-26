@@ -65,6 +65,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/chat/chat.component').then((m) => m.ChatComponent),
       },
+      {
+        path: 'rebalancing-agent',
+        loadComponent: () =>
+          import('./features/rebalancing-agent/rebalancing-agent.component').then(
+            (m) => m.RebalancingAgentComponent
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

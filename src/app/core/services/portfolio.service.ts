@@ -44,6 +44,54 @@ export class PortfolioService {
     );
   }
 
+  streamRebalancingChat(message: string, sessionId: string): Observable<string> {
+    return new Observable<string>((observer: Observer<string>) => {
+      const token = localStorage.getItem('stockmarket_token') ?? '';
+
+      fetch(`${this.base}/ai/rebalancing/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ message, sessionId }),
+      })
+        .then(async (response) => {
+          const reader = response.body!.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() ?? '';
+
+            for (const line of lines) {
+              if (!line.startsWith('data: ')) continue;
+              const content = line.slice(6);
+              if (content === '[DONE]') {
+                observer.complete();
+                return;
+              }
+              if (content) {
+                observer.next(content);
+              }
+            }
+          }
+
+          observer.complete();
+        })
+        .catch((err) => observer.error(err));
+    });
+  }
+
+  clearRebalancingSession(sessionId: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/ai/rebalancing/session/${sessionId}`);
+  }
+
   streamChat(message: string): Observable<string> {
     return new Observable<string>((observer: Observer<string>) => {
       const token = localStorage.getItem('stockmarket_token') ?? '';

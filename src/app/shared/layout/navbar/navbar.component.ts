@@ -29,6 +29,7 @@ export class NavbarComponent implements OnInit {
       { label: 'Sentiment', icon: 'pi pi-comments', routerLink: '/sentiment' },
       { label: 'Alerts', icon: 'pi pi-bell', routerLink: '/alerts' },
       { label: 'AI Chat', icon: 'pi pi-sparkles', routerLink: '/chat' },
+      { label: 'Rebalancing Agent', icon: 'pi pi-sliders-h', routerLink: '/rebalancing-agent' },
     ];
   }
 
