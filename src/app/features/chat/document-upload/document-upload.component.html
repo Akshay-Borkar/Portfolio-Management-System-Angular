@@ -1,0 +1,71 @@
+<div class="upload-section">
+  <div class="section-label">
+    <i class="pi pi-upload"></i>
+    <span>Upload Document</span>
+  </div>
+
+  <input
+    #fileInput
+    type="file"
+    accept=".pdf"
+    class="hidden-input"
+    (change)="onFileSelected($event)"
+  />
+
+  <!-- Idle: drop zone / pick button -->
+  @if (state() === 'idle') {
+    <div class="drop-zone" (click)="triggerFilePicker()">
+      <i class="pi pi-file-pdf drop-icon"></i>
+      <span class="drop-label">Click to select a PDF</span>
+      <span class="drop-hint">Max 20 MB</span>
+    </div>
+  }
+
+  <!-- Uploading: progress bar -->
+  @if (state() === 'uploading') {
+    <div class="status-block">
+      <div class="status-row">
+        <i class="pi pi-spin pi-spinner status-icon"></i>
+        <span class="status-text">Uploading… {{ uploadPercent() }}%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="uploadPercent()"></div>
+      </div>
+      <p class="file-name">{{ selectedFile()?.name }}</p>
+    </div>
+  }
+
+  <!-- Processing: server accepted, indexing -->
+  @if (state() === 'processing') {
+    <div class="status-block">
+      <div class="status-row">
+        <i class="pi pi-spin pi-cog status-icon processing"></i>
+        <span class="status-text">Indexing document…</span>
+      </div>
+      <p class="file-name">{{ selectedFile()?.name }}</p>
+    </div>
+  }
+
+  <!-- Done -->
+  @if (state() === 'done') {
+    <div class="status-block">
+      <div class="status-row success">
+        <i class="pi pi-check-circle status-icon success"></i>
+        <span class="status-text">Ingestion started</span>
+      </div>
+      <p class="file-name">{{ selectedFile()?.name }}</p>
+      <button class="link-btn" (click)="reset()">Upload another</button>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (state() === 'error') {
+    <div class="status-block">
+      <div class="status-row error">
+        <i class="pi pi-times-circle status-icon error"></i>
+        <span class="status-text">{{ errorMessage() }}</span>
+      </div>
+      <button class="link-btn" (click)="reset()">Try again</button>
+    </div>
+  }
+</div>

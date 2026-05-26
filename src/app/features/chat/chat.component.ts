@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { PortfolioService } from '../../core/services/portfolio.service';
+import { DocumentUploadComponent } from './document-upload/document-upload.component';
+import { DocumentListComponent } from './document-list/document-list.component';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -10,7 +12,7 @@ interface ChatMessage {
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, DocumentUploadComponent, DocumentListComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css',
 })
@@ -18,10 +20,12 @@ export class ChatComponent {
   private readonly portfolioService = inject(PortfolioService);
 
   @ViewChild('chatHistory') chatHistoryRef!: ElementRef<HTMLDivElement>;
+  @ViewChild(DocumentListComponent) docList!: DocumentListComponent;
 
   messages = signal<ChatMessage[]>([]);
   streamingContent = signal('');
   loading = signal(false);
+  sidebarOpen = signal(true);
   userInput = '';
 
   readonly suggestedQuestions = [
@@ -78,6 +82,14 @@ export class ChatComponent {
   sendSuggestion(question: string): void {
     this.userInput = question;
     this.sendMessage();
+  }
+
+  onDocumentUploaded(): void {
+    this.docList?.load();
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen.update((v) => !v);
   }
 
   scrollToBottom(): void {

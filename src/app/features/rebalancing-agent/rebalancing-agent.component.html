@@ -38,7 +38,7 @@
           <i [class]="msg.role === 'user' ? 'pi pi-user' : 'pi pi-sliders-h'"></i>
           <span>{{ msg.role === 'user' ? 'You' : 'Rebalancing Agent' }}</span>
         </div>
-        <div class="msg-content" style="white-space: pre-wrap">{{ msg.content }}</div>
+        <div class="msg-content markdown-body" [innerHTML]="msg.content | markdown"></div>
       </div>
     }
 
@@ -50,7 +50,7 @@
           <span>Rebalancing Agent</span>
         </div>
         @if (streamingContent()) {
-          <div class="msg-content" style="white-space: pre-wrap">{{ streamingContent() }}<span class="cursor">▍</span></div>
+          <div class="msg-content markdown-body" [innerHTML]="streamingContent() | markdown"></div>
         } @else {
           <div class="skeleton-lines">
             <p-skeleton height="0.9rem" styleClass="mb-2" />

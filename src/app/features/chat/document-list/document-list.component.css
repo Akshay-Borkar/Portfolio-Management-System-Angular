@@ -1,0 +1,110 @@
+.list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.refresh-btn {
+  color: rgba(255, 255, 255, 0.35) !important;
+  width: 1.6rem !important;
+  height: 1.6rem !important;
+  transition: color 0.2s;
+}
+
+.refresh-btn:hover {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.refresh-btn.spin .p-button-icon {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Doc list */
+.doc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.25) transparent;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 7px;
+  min-width: 0;
+}
+
+.doc-icon {
+  font-size: 0.85rem;
+  color: rgba(239, 68, 68, 0.7);
+  flex-shrink: 0;
+}
+
+.doc-name {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.skeleton-list {
+  padding: 0.25rem 0;
+}
+
+.list-notice {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 0;
+}
+
+.list-notice.error {
+  color: #f87171;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8rem;
+  color: #a5b4fc;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link-btn:hover {
+  color: #c7d2fe;
+}

@@ -1,11 +1,16 @@
 {
+  "/api/auth": {
+    "target": "http://localhost:5001",
+    "secure": false,
+    "changeOrigin": true
+  },
   "/api": {
-    "target": "http://localhost:5000",
+    "target": "http://localhost:5002",
     "secure": false,
     "changeOrigin": true
   },
   "/hubs": {
-    "target": "http://localhost:5000",
+    "target": "http://localhost:5002",
     "secure": false,
     "changeOrigin": true,
     "ws": true
