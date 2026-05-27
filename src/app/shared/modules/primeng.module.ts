@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BadgeModule } from 'primeng/badge';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
@@ -23,6 +24,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 const MODULES = [
   BadgeModule,
+  OverlayPanelModule,
   ButtonModule,
   CalendarModule,
   CardModule,

@@ -1,0 +1,55 @@
+<p-dialog
+  header="Weekly Portfolio Review"
+  [visible]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [style]="{ width: '780px', maxWidth: '95vw' }"
+  [draggable]="false"
+  styleClass="portfolio-review-dialog">
+
+  @if (review) {
+    <div class="review-meta mb-3">
+      <span class="text-sm text-color-secondary">
+        Generated: {{ review.generatedAt | date:'medium' }}
+      </span>
+    </div>
+
+    <p-card styleClass="review-section mb-3">
+      <ng-template pTemplate="header">
+        <div class="review-section-header news">
+          <i class="pi pi-newspaper"></i>
+          <span>News Summary</span>
+        </div>
+      </ng-template>
+      <div class="review-content" [innerHTML]="review.newsSummary | markdown"></div>
+    </p-card>
+
+    <p-card styleClass="review-section mb-3">
+      <ng-template pTemplate="header">
+        <div class="review-section-header risk">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>Risk Analysis</span>
+        </div>
+      </ng-template>
+      <div class="review-content" [innerHTML]="review.riskAnalysis | markdown"></div>
+    </p-card>
+
+    <p-card styleClass="review-section">
+      <ng-template pTemplate="header">
+        <div class="review-section-header recommendation">
+          <i class="pi pi-lightbulb"></i>
+          <span>Weekly Recommendation</span>
+        </div>
+      </ng-template>
+      <div class="review-content" [innerHTML]="review.weeklyRecommendation | markdown"></div>
+    </p-card>
+  } @else {
+    <div class="flex justify-content-center align-items-center" style="min-height: 200px;">
+      <p-progressSpinner strokeWidth="4" />
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <p-button label="Close" severity="secondary" (onClick)="close()" />
+  </ng-template>
+</p-dialog>
