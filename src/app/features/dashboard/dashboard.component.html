@@ -1,5 +1,32 @@
-<h2 class="welcome-heading">Welcome back, {{ (currentUser$ | async)?.userName }} 👋</h2>
-<p class="text-color-secondary mt-1 mb-4">Here's your financial overview</p>
+<div class="flex align-items-center justify-content-between mb-1">
+  <div>
+    <h2 class="welcome-heading">Welcome back, {{ (currentUser$ | async)?.userName }} 👋</h2>
+    <p class="text-color-secondary mt-1 mb-0">Here's your financial overview</p>
+  </div>
+
+  <!-- Bell + Generate Review actions -->
+  <div class="flex align-items-center gap-2">
+    @if (unreadReviewCount() > 0) {
+      <p-button
+        icon="pi pi-bell"
+        [badge]="unreadReviewCount().toString()"
+        badgeSeverity="danger"
+        severity="secondary"
+        [text]="true"
+        pTooltip="View latest portfolio review"
+        (onClick)="openReview()"
+      />
+    }
+    <p-button
+      label="Generate Weekly Review"
+      icon="pi pi-sparkles"
+      severity="help"
+      size="small"
+      [loading]="reviewGenerating()"
+      (onClick)="generateReview()"
+    />
+  </div>
+</div>
 
 <!-- Quick nav cards -->
 <div class="grid mt-2 mb-2">
@@ -115,7 +142,6 @@
     </div>
   </div>
 
-  <!-- Top Gainers & Losers -->
   @if (s.holdings.length > 0) {
     <div class="grid">
       <div class="col-12 md:col-6">
@@ -174,3 +200,10 @@
   }
   }
 }
+
+<!-- Portfolio Review Modal -->
+<app-portfolio-review-modal
+  [visible]="reviewModalVisible()"
+  (visibleChange)="reviewModalVisible.set($event)"
+  [review]="latestReview()"
+/>

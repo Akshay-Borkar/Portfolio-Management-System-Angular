@@ -4,13 +4,18 @@
     "secure": false,
     "changeOrigin": true
   },
+  "/api/agents": {
+    "target": "http://localhost:5007",
+    "secure": false,
+    "changeOrigin": true
+  },
   "/api": {
     "target": "http://localhost:5002",
     "secure": false,
     "changeOrigin": true
   },
   "/hubs": {
-    "target": "http://localhost:5002",
+    "target": "http://localhost:5006",
     "secure": false,
     "changeOrigin": true,
     "ws": true
