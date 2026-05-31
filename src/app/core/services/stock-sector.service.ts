@@ -8,11 +8,12 @@ import {
   StockSectorDetailDTO,
   UpdateSectorRequest,
 } from '../models/stock-sector.models';
+import { ApiEndpoints } from '../constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class StockSectorService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiUrl}/api/stocksector`;
+  private readonly base = `${environment.apiUrl}${ApiEndpoints.StockSector.Base}`;
 
   getAll(): Observable<StockSectorDTO[]> {
     return this.http.get<StockSectorDTO[]>(this.base);

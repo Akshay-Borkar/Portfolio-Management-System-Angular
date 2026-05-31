@@ -10,45 +10,46 @@ import {
 } from '../models/portfolio.models';
 import { OhlcvBar } from '../models/stock-market-data.models';
 import { PagedResult } from '../models/paged-result.models';
+import { ApiEndpoints, Pagination, SseMarkers, StorageKeys } from '../constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class PortfolioService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiUrl}/api/portfolio`;
+  private readonly base = `${environment.apiUrl}${ApiEndpoints.Portfolio.Base}`;
 
   getSummary(): Observable<PortfolioSummaryDTO> {
-    return this.http.get<PortfolioSummaryDTO>(`${this.base}/summary`);
+    return this.http.get<PortfolioSummaryDTO>(`${this.base}${ApiEndpoints.Portfolio.Summary}`);
   }
 
   addStock(body: AddStockRequest): Observable<{ id: string }> {
-    return this.http.post<{ id: string }>(`${this.base}/stock`, body);
+    return this.http.post<{ id: string }>(`${this.base}${ApiEndpoints.Portfolio.Stock}`, body);
   }
 
   addInvestment(body: AddInvestmentRequest): Observable<{ id: string }> {
-    return this.http.post<{ id: string }>(`${this.base}/investment`, body);
+    return this.http.post<{ id: string }>(`${this.base}${ApiEndpoints.Portfolio.Investment}`, body);
   }
 
   deleteStock(stockId: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/stock/${stockId}`);
+    return this.http.delete<void>(`${this.base}${ApiEndpoints.Portfolio.Stock}/${stockId}`);
   }
 
-  getInvestmentsByStock(stockId: string, page = 1, pageSize = 5): Observable<PagedResult<InvestmentHistoryDTO>> {
-    return this.http.get<PagedResult<InvestmentHistoryDTO>>(`${this.base}/investments/${stockId}`, {
+  getInvestmentsByStock(stockId: string, page = Pagination.DefaultPage, pageSize = Pagination.PortfolioPageSize): Observable<PagedResult<InvestmentHistoryDTO>> {
+    return this.http.get<PagedResult<InvestmentHistoryDTO>>(`${this.base}${ApiEndpoints.Portfolio.Investments}/${stockId}`, {
       params: { page, pageSize },
     });
   }
 
   getChartData(ticker: string, interval: string, range: string): Observable<OhlcvBar[]> {
     return this.http.get<OhlcvBar[]>(
-      `${this.base}/chart/${ticker}?interval=${interval}&range=${range}`
+      `${this.base}${ApiEndpoints.Portfolio.Chart}/${ticker}?interval=${interval}&range=${range}`
     );
   }
 
   streamRebalancingChat(message: string, sessionId: string): Observable<string> {
     return new Observable<string>((observer: Observer<string>) => {
-      const token = localStorage.getItem('stockmarket_token') ?? '';
+      const token = localStorage.getItem(StorageKeys.Token) ?? '';
 
-      fetch(`${this.base}/ai/rebalancing/chat`, {
+      fetch(`${this.base}${ApiEndpoints.Portfolio.RebalancingChat}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,9 +71,9 @@ export class PortfolioService {
             buffer = lines.pop() ?? '';
 
             for (const line of lines) {
-              if (!line.startsWith('data: ')) continue;
-              const content = line.slice(6);
-              if (content === '[DONE]') {
+              if (!line.startsWith(SseMarkers.DataPrefix)) continue;
+              const content = line.slice(SseMarkers.DataPrefix.length);
+              if (content === SseMarkers.Done) {
                 observer.complete();
                 return;
               }
@@ -89,14 +90,14 @@ export class PortfolioService {
   }
 
   clearRebalancingSession(sessionId: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/ai/rebalancing/session/${sessionId}`);
+    return this.http.delete<void>(`${this.base}${ApiEndpoints.Portfolio.RebalancingSession}/${sessionId}`);
   }
 
   streamChat(message: string): Observable<string> {
     return new Observable<string>((observer: Observer<string>) => {
-      const token = localStorage.getItem('stockmarket_token') ?? '';
+      const token = localStorage.getItem(StorageKeys.Token) ?? '';
 
-      fetch(`${this.base}/chat`, {
+      fetch(`${this.base}${ApiEndpoints.Portfolio.Chat}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,9 +119,9 @@ export class PortfolioService {
             buffer = lines.pop() ?? '';
 
             for (const line of lines) {
-              if (!line.startsWith('data: ')) continue;
-              const content = line.slice(6);
-              if (content === '[DONE]') {
+              if (!line.startsWith(SseMarkers.DataPrefix)) continue;
+              const content = line.slice(SseMarkers.DataPrefix.length);
+              if (content === SseMarkers.Done) {
                 observer.complete();
                 return;
               }

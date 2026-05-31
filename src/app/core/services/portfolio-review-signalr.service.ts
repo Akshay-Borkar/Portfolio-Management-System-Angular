@@ -3,6 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 import { PortfolioReview } from '../models/portfolio-review.models';
 import { environment } from '../../../environments/environment';
+import { SignalRMethods, StorageKeys } from '../constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class PortfolioReviewSignalRService {
@@ -14,7 +15,7 @@ export class PortfolioReviewSignalRService {
   private buildConnection(): signalR.HubConnection {
     return new signalR.HubConnectionBuilder()
       .withUrl(environment.portfolioReviewHubUrl, {
-        accessTokenFactory: () => localStorage.getItem('stockmarket_token') ?? '',
+        accessTokenFactory: () => localStorage.getItem(StorageKeys.Token) ?? '',
       })
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Warning)
@@ -26,7 +27,7 @@ export class PortfolioReviewSignalRService {
 
     this.connection = this.buildConnection();
 
-    this.connection.on('ReceivePortfolioReview', (review: PortfolioReview) => {
+    this.connection.on(SignalRMethods.ReceivePortfolioReview, (review: PortfolioReview) => {
       console.log('[PortfolioReviewSignalR] ReceivePortfolioReview received:', review);
       this.reviews$.next(review);
     });

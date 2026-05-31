@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { catchError, throwError } from 'rxjs';
 import { logout } from '../../store/auth/auth.actions';
+import { AppRoutes, HttpStatusCodes, StorageKeys } from '../constants/app.constants';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('stockmarket_token');
+  const token = localStorage.getItem(StorageKeys.Token);
   const router = inject(Router);
   const store = inject(Store);
 
@@ -16,9 +17,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(cloned).pipe(
     catchError((err: HttpErrorResponse) => {
-      if (err.status === 401 || err.status === 403) {
+      if (err.status === HttpStatusCodes.Unauthorized || err.status === HttpStatusCodes.Forbidden) {
         store.dispatch(logout());
-        router.navigate(['/login']);
+        router.navigate([AppRoutes.Login]);
       }
       return throwError(() => err);
     })

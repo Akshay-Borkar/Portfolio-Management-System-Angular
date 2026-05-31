@@ -3,6 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LivePriceUpdate } from '../models/stock-market-data.models';
+import { SignalRMethods, StorageKeys } from '../constants/app.constants';
 
 export type ConnectionState = 'connected' | 'connecting' | 'reconnecting' | 'disconnected';
 
@@ -16,8 +17,7 @@ export class SignalRService {
   private buildConnection(): signalR.HubConnection {
     return new signalR.HubConnectionBuilder()
       .withUrl(environment.signalrHubUrl, {
-        accessTokenFactory: () =>
-          localStorage.getItem('stockmarket_token') ?? '',
+        accessTokenFactory: () => localStorage.getItem(StorageKeys.Token) ?? '',
       })
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Warning)
@@ -30,7 +30,7 @@ export class SignalRService {
     this.connection = this.buildConnection();
 
     this.connection.on(
-      'ReceiveStockPrice',
+      SignalRMethods.ReceiveStockPrice,
       (symbol: string, price: number) => {
         this.priceUpdates$.next({ symbol, price });
       }
@@ -52,10 +52,10 @@ export class SignalRService {
   }
 
   subscribeToStock(ticker: string): void {
-    this.connection?.invoke('SubscribeToStock', ticker).catch(console.error);
+    this.connection?.invoke(SignalRMethods.SubscribeToStock, ticker).catch(console.error);
   }
 
   unsubscribeFromStock(ticker: string): void {
-    this.connection?.invoke('UnsubscribeFromStock', ticker).catch(console.error);
+    this.connection?.invoke(SignalRMethods.UnsubscribeFromStock, ticker).catch(console.error);
   }
 }

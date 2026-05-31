@@ -1,9 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthState, LoginResponse } from '../../core/models/auth.models';
 import * as AuthActions from './auth.actions';
-
-const TOKEN_KEY = 'stockmarket_token';
-const USER_KEY = 'stockmarket_user';
+import { StorageKeys } from '../../core/constants/app.constants';
 
 export const initialState: AuthState = {
   user: null,
@@ -21,8 +19,8 @@ export const authReducer = createReducer(
   })),
 
   on(AuthActions.loginSuccess, (state, { response }) => {
-    localStorage.setItem(TOKEN_KEY, response.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(response));
+    localStorage.setItem(StorageKeys.Token, response.token);
+    localStorage.setItem(StorageKeys.User, JSON.stringify(response));
     return { ...state, user: response, loading: false, error: null };
   }),
 
@@ -39,14 +37,14 @@ export const authReducer = createReducer(
   })),
 
   on(AuthActions.logout, (state) => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(StorageKeys.Token);
+    localStorage.removeItem(StorageKeys.User);
     return { ...initialState };
   }),
 
   on(AuthActions.loadUserFromStorage, (state) => {
-    const raw = localStorage.getItem(USER_KEY);
-    const token = localStorage.getItem(TOKEN_KEY);
+    const raw = localStorage.getItem(StorageKeys.User);
+    const token = localStorage.getItem(StorageKeys.Token);
     if (!raw || !token) return state;
     try {
       const user: LoginResponse = JSON.parse(raw);

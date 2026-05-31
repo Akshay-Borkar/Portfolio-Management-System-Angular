@@ -1,6 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-
-const STORAGE_KEY = 'stockmarket_theme';
+import { StorageKeys, ThemeValues } from '../constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
@@ -9,7 +8,7 @@ export class ThemeService {
   toggle(): void {
     this.isDark.set(!this.isDark());
     this.apply(this.isDark());
-    localStorage.setItem(STORAGE_KEY, this.isDark() ? 'dark' : 'light');
+    localStorage.setItem(StorageKeys.Theme, this.isDark() ? ThemeValues.Dark : ThemeValues.Light);
   }
 
   init(): void {
@@ -17,12 +16,12 @@ export class ThemeService {
   }
 
   private apply(dark: boolean): void {
-    document.documentElement.classList.toggle('dark-mode', dark);
+    document.documentElement.classList.toggle(ThemeValues.DarkModeClass, dark);
   }
 
   private loadPreference(): boolean {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return stored === 'dark';
+    const stored = localStorage.getItem(StorageKeys.Theme);
+    if (stored) return stored === ThemeValues.Dark;
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
 }
