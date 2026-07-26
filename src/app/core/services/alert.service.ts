@@ -11,7 +11,7 @@ export class AlertService {
   private readonly http = inject(HttpClient);
   private readonly base = `${environment.apiUrl}${ApiEndpoints.Alerts.Base}`;
 
-  getAlerts(page = Pagination.DefaultPage, pageSize = Pagination.DefaultPageSize): Observable<PagedResult<AlertDTO>> {
+  getAlerts(page: number = Pagination.DefaultPage, pageSize: number = Pagination.DefaultPageSize): Observable<PagedResult<AlertDTO>> {
     return this.http.get<PagedResult<AlertDTO>>(this.base, {
       params: { page, pageSize },
     });

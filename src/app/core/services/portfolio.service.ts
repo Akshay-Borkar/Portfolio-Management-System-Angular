@@ -33,7 +33,7 @@ export class PortfolioService {
     return this.http.delete<void>(`${this.base}${ApiEndpoints.Portfolio.Stock}/${stockId}`);
   }
 
-  getInvestmentsByStock(stockId: string, page = Pagination.DefaultPage, pageSize = Pagination.PortfolioPageSize): Observable<PagedResult<InvestmentHistoryDTO>> {
+  getInvestmentsByStock(stockId: string, page: number = Pagination.DefaultPage, pageSize: number = Pagination.PortfolioPageSize): Observable<PagedResult<InvestmentHistoryDTO>> {
     return this.http.get<PagedResult<InvestmentHistoryDTO>>(`${this.base}${ApiEndpoints.Portfolio.Investments}/${stockId}`, {
       params: { page, pageSize },
     });
