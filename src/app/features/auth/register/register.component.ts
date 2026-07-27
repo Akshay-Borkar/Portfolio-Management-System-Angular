@@ -19,7 +19,7 @@ export class RegisterComponent {
   readonly loading$ = this.store.select(selectAuthLoading);
   readonly error$ = this.store.select(selectAuthError);
 
-  readonly roles = ['User', 'Admin'];
+  readonly roles = ['Employee', 'Administrator'];
 
   form = this.fb.nonNullable.group({
     firstName: ['', Validators.required],
@@ -27,7 +27,7 @@ export class RegisterComponent {
     email: ['', [Validators.required, Validators.email]],
     userName: ['', [Validators.required, Validators.minLength(6)]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    role: ['User', Validators.required],
+    role: ['Employee', Validators.required],
   });
 
   onSubmit(): void {
