@@ -14,8 +14,12 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
-# environment files
+# environment files — hold real Azure AD clientId/authority/apiScope; environment.example.ts
+# (committed) has the safe placeholder shape to copy from
 .env
+environment.ts
+environment.prod.ts
+!environment.example.ts
 
 # Angular build
 .angular
