@@ -6,6 +6,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   id: string;
   userName: string;
+  displayName: string;
   email: string;
   token: string;
 }

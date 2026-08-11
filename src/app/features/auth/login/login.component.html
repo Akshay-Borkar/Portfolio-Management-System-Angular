@@ -48,6 +48,18 @@
             [disabled]="form.invalid"
             styleClass="w-full mt-1"
           />
+          @if (azureAdEnabled) {
+            <p-button
+              label="Sign in with Microsoft"
+              icon="pi pi-microsoft"
+              type="button"
+              severity="secondary"
+              [outlined]="true"
+              [loading]="!!(loading$ | async)"
+              styleClass="w-full"
+              (onClick)="onMicrosoftLogin()"
+            />
+          }
           <span class="text-center text-sm text-color-secondary">
             No account? <a routerLink="/register" style="color: #818cf8; text-decoration: none; font-weight: 600;">Register</a>
           </span>

@@ -1,6 +1,6 @@
 <div class="flex align-items-center justify-content-between mb-1">
   <div>
-    <h2 class="welcome-heading">Welcome back, {{ (currentUser$ | async)?.userName }} 👋</h2>
+    <h2 class="welcome-heading">Welcome back, {{ (currentUser$ | async)?.displayName || (currentUser$ | async)?.userName }} 👋</h2>
     <p class="text-color-secondary mt-1 mb-0">Here's your financial overview</p>
   </div>
 

@@ -4,7 +4,7 @@
   </ng-template>
   <ng-template pTemplate="end">
     <div class="flex align-items-center gap-2">
-      <span class="text-sm text-color-secondary">{{ (currentUser$ | async)?.userName }}</span>
+      <span class="text-sm text-color-secondary">{{ (currentUser$ | async)?.displayName || (currentUser$ | async)?.userName }}</span>
 
       <!-- Portfolio review notification bell -->
       <p-button

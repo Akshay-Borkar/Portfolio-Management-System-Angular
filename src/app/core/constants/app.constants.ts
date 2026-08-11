@@ -9,6 +9,7 @@ export const ApiEndpoints = {
     Base: '/api/auth',
     Login: '/login',
     Register: '/register',
+    ExternalLogin: '/external/login',
   },
   Portfolio: {
     Base: '/api/portfolio',

@@ -6,8 +6,58 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    /* Boot loader — plain CSS, no JS, no dependency on the app bundle or Angular's own
+       stylesheet having loaded yet. Lives inside <app-root> as light-DOM content, so Angular
+       replaces it automatically the instant it renders its component tree — nothing needs to
+       remove it manually. Exists because APP_INITIALIZER (MSAL init + redirect-response
+       handling + the Entra token exchange) blocks all rendering until it resolves, which on a
+       redirect-flow login return can take a few seconds — without this the page just looks
+       frozen/blank for that whole window. */
+    #boot-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: #0a0e1a;
+      color: rgba(255, 255, 255, 0.65);
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    }
+    #boot-loader .ring {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid rgba(99, 102, 241, 0.2);
+      border-top-color: #6366f1;
+      animation: boot-spin 0.8s linear infinite;
+    }
+    #boot-loader .brand {
+      font-size: 17px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    #boot-loader .label {
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+    @keyframes boot-spin {
+      to { transform: rotate(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #boot-loader .ring { animation-duration: 2.4s; }
+    }
+  </style>
 </head>
 <body class="p-ripple-disabled">
-  <app-root></app-root>
+  <app-root>
+    <div id="boot-loader">
+      <div class="brand">📈 StockMarket</div>
+      <div class="ring"></div>
+      <div class="label">Loading…</div>
+    </div>
+  </app-root>
 </body>
 </html>

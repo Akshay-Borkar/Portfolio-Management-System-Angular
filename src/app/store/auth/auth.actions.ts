@@ -27,5 +27,14 @@ export const registerFailure = createAction(
   props<{ error: string }>()
 );
 
+export const loginWithMicrosoft = createAction('[Auth] Login With Microsoft');
+
+// Dispatched from app.config.ts's bootstrap initializer when the app reloads after Entra
+// redirects back with an auth response — see handleRedirectObservable() there.
+export const loginWithMicrosoftRedirectReturned = createAction(
+  '[Auth] Login With Microsoft Redirect Returned',
+  props<{ accessToken: string }>()
+);
+
 export const logout = createAction('[Auth] Logout');
 export const loadUserFromStorage = createAction('[Auth] Load User From Storage');

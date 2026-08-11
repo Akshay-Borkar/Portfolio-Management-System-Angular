@@ -2,7 +2,8 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { SharedModule } from '../../../shared/modules/shared.module';
-import { login } from '../../../store/auth/auth.actions';
+import { isAzureAdConfigured } from '../../../core/auth/msal.config';
+import { login, loginWithMicrosoft } from '../../../store/auth/auth.actions';
 import { selectAuthError, selectAuthLoading } from '../../../store/auth/auth.selectors';
 
 @Component({
@@ -18,6 +19,7 @@ export class LoginComponent {
 
   readonly loading$ = this.store.select(selectAuthLoading);
   readonly error$ = this.store.select(selectAuthError);
+  readonly azureAdEnabled = isAzureAdConfigured();
 
   form = this.fb.nonNullable.group({
     userName: ['', Validators.required],
@@ -27,5 +29,9 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.form.invalid) return;
     this.store.dispatch(login({ request: this.form.getRawValue() }));
+  }
+
+  onMicrosoftLogin(): void {
+    this.store.dispatch(loginWithMicrosoft());
   }
 }
