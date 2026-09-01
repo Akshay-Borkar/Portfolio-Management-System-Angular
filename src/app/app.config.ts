@@ -2,9 +2,7 @@ import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
 import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import { MessageService } from 'primeng/api';
-import Aura from '@primeng/themes/aura';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideStore, Store } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
@@ -55,7 +53,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
-    providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.dark-mode', cssLayer: false } } }),
+    provideNativeDateAdapter(),
     provideStore({
       auth: authReducer,
       stockSector: stockSectorReducer,
@@ -66,7 +64,6 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools({ maxAge: 25, logOnly: environment.production }),
     { provide: JWT_OPTIONS, useValue: {} },
     JwtHelperService,
-    MessageService,
     // MsalInterceptor is deliberately NOT registered — authInterceptor above stays the single
     // source of truth for every normal request. MSAL is only ever consulted directly by the
     // loginWithMicrosoft$ effect (see store/auth/auth.effects.ts).

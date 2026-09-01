@@ -1,6 +1,6 @@
 <div class="upload-section">
   <div class="section-label">
-    <i class="pi pi-upload"></i>
+    <mat-icon>upload</mat-icon>
     <span>Upload Document</span>
   </div>
 
@@ -15,7 +15,7 @@
   <!-- Idle: drop zone / pick button -->
   @if (state() === 'idle') {
     <div class="drop-zone" (click)="triggerFilePicker()">
-      <i class="pi pi-file-pdf drop-icon"></i>
+      <mat-icon class="drop-icon">picture_as_pdf</mat-icon>
       <span class="drop-label">Click to select a PDF</span>
       <span class="drop-hint">Max 20 MB</span>
     </div>
@@ -25,7 +25,7 @@
   @if (state() === 'uploading') {
     <div class="status-block">
       <div class="status-row">
-        <i class="pi pi-spin pi-spinner status-icon"></i>
+        <mat-icon class="status-icon spin">progress_activity</mat-icon>
         <span class="status-text">Uploading… {{ uploadPercent() }}%</span>
       </div>
       <div class="progress-track">
@@ -39,7 +39,7 @@
   @if (state() === 'processing') {
     <div class="status-block">
       <div class="status-row">
-        <i class="pi pi-spin pi-cog status-icon processing"></i>
+        <mat-icon class="status-icon processing spin">settings</mat-icon>
         <span class="status-text">Indexing document…</span>
       </div>
       <p class="file-name">{{ selectedFile()?.name }}</p>
@@ -50,7 +50,7 @@
   @if (state() === 'done') {
     <div class="status-block">
       <div class="status-row success">
-        <i class="pi pi-check-circle status-icon success"></i>
+        <mat-icon class="status-icon success">check_circle</mat-icon>
         <span class="status-text">Ingestion started</span>
       </div>
       <p class="file-name">{{ selectedFile()?.name }}</p>
@@ -62,7 +62,7 @@
   @if (state() === 'error') {
     <div class="status-block">
       <div class="status-row error">
-        <i class="pi pi-times-circle status-icon error"></i>
+        <mat-icon class="status-icon error">cancel</mat-icon>
         <span class="status-text">{{ errorMessage() }}</span>
       </div>
       <button class="link-btn" (click)="reset()">Try again</button>

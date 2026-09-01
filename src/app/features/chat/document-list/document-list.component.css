@@ -32,7 +32,7 @@
   color: rgba(255, 255, 255, 0.7) !important;
 }
 
-.refresh-btn.spin .p-button-icon {
+.refresh-btn.spin mat-icon {
   animation: spin 0.8s linear infinite;
 }
 
@@ -66,9 +66,17 @@
 }
 
 .doc-icon {
-  font-size: 0.85rem;
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
   color: rgba(239, 68, 68, 0.7);
   flex-shrink: 0;
+}
+
+.section-label mat-icon {
+  font-size: 0.9rem;
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .doc-name {

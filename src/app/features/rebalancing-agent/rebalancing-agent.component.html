@@ -3,16 +3,16 @@
   <!-- Header -->
   <div class="rebalancing-header">
     <div class="header-title">
-      <i class="pi pi-sliders-h"></i>
+      <mat-icon class="title-icon">tune</mat-icon>
       <h2>Rebalancing Agent</h2>
     </div>
     <p class="header-sub">AI-powered portfolio rebalancing with guardrails</p>
   </div>
 
   <!-- Info banner -->
-  <p-message
+  <app-inline-message
+    class="info-banner block"
     severity="info"
-    styleClass="info-banner"
     text="This agent operates in dry-run mode. No trades are executed. Always confirm before proceeding."
   />
 
@@ -22,7 +22,7 @@
     <!-- Empty state with suggested prompts -->
     @if (messages().length === 0 && !loading()) {
       <div class="empty-state">
-        <i class="pi pi-sliders-h empty-icon"></i>
+        <mat-icon class="empty-icon">tune</mat-icon>
         <p>Ask me to analyse your sector allocation or build a rebalancing plan</p>
       </div>
     }
@@ -35,7 +35,7 @@
         [class.msg-assistant]="msg.role === 'assistant'"
       >
         <div class="msg-label">
-          <i [class]="msg.role === 'user' ? 'pi pi-user' : 'pi pi-sliders-h'"></i>
+          <mat-icon>{{ msg.role === 'user' ? 'person' : 'tune' }}</mat-icon>
           <span>{{ msg.role === 'user' ? 'You' : 'Rebalancing Agent' }}</span>
         </div>
         <div class="msg-content markdown-body" [innerHTML]="msg.content | markdown"></div>
@@ -46,16 +46,16 @@
     @if (loading()) {
       <div class="msg-bubble msg-assistant">
         <div class="msg-label">
-          <i class="pi pi-sliders-h"></i>
+          <mat-icon>tune</mat-icon>
           <span>Rebalancing Agent</span>
         </div>
         @if (streamingContent()) {
           <div class="msg-content markdown-body" [innerHTML]="streamingContent() | markdown"></div>
         } @else {
           <div class="skeleton-lines">
-            <p-skeleton height="0.9rem" styleClass="mb-2" />
-            <p-skeleton height="0.9rem" width="85%" styleClass="mb-2" />
-            <p-skeleton height="0.9rem" width="60%" />
+            <app-skeleton height="0.9rem" class="block mb-2" />
+            <app-skeleton height="0.9rem" width="85%" class="block mb-2" />
+            <app-skeleton height="0.9rem" width="60%" />
           </div>
         }
       </div>
@@ -77,7 +77,6 @@
   <!-- Input area -->
   <div class="chat-input-area">
     <input
-      pInputText
       class="chat-input"
       [(ngModel)]="userInput"
       placeholder="Ask about sector allocation or request a rebalancing plan…"
@@ -85,22 +84,26 @@
       [disabled]="loading()"
     />
     <button
-      pButton
-      icon="pi pi-send"
-      class="p-button-rounded send-btn"
+      mat-mini-fab
+      color="primary"
+      class="send-btn"
       (click)="sendMessage()"
       [disabled]="!userInput.trim() || loading()"
-    ></button>
+      aria-label="Send message"
+    >
+      <mat-icon>send</mat-icon>
+    </button>
     <button
-      pButton
-      label="Clear Session"
-      icon="pi pi-refresh"
-      class="p-button-outlined p-button-secondary clear-btn"
+      mat-stroked-button
+      class="clear-btn"
       (click)="clearSession()"
       [disabled]="loading()"
-      pTooltip="Starts a new conversation and resets agent memory"
-      tooltipPosition="top"
-    ></button>
+      matTooltip="Starts a new conversation and resets agent memory"
+      matTooltipPosition="above"
+    >
+      <mat-icon>refresh</mat-icon>
+      Clear Session
+    </button>
   </div>
 
 </div>

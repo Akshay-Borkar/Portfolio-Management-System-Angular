@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs/operators';
-import { MessageService } from 'primeng/api';
+import { NotificationService } from '../../shared/services/notification.service';
 import {
   addStockSuccess,
   addStockFailure,
@@ -26,7 +26,7 @@ import { createAlertSuccess, createAlertFailure, deleteAlertSuccess, deleteAlert
 @Injectable()
 export class NotificationEffects {
   private readonly actions$ = inject(Actions);
-  private readonly messageService = inject(MessageService);
+  private readonly notify = inject(NotificationService);
 
   addStockSuccess$ = createEffect(
     () => this.actions$.pipe(
@@ -176,10 +176,10 @@ export class NotificationEffects {
   );
 
   private success(summary: string, detail: string): void {
-    this.messageService.add({ severity: 'success', summary, detail, life: 4000 });
+    this.notify.success(summary, detail);
   }
 
   private error(summary: string, detail: string): void {
-    this.messageService.add({ severity: 'error', summary, detail, life: 5000 });
+    this.notify.error(summary, detail);
   }
 }

@@ -3,26 +3,27 @@
     <h2 class="page-title">Live Stock Tracker</h2>
     <p class="page-subtitle">Subscribe to tickers to receive real-time price updates</p>
   </div>
-  <p-tag
+  <app-tag
     [value]="connectionState() === 'connected' ? 'Connected' : connectionState() === 'reconnecting' ? 'Reconnecting...' : connectionState() === 'connecting' ? 'Connecting...' : 'Disconnected'"
     [severity]="connectionState() === 'connected' ? 'success' : connectionState() === 'reconnecting' ? 'warn' : connectionState() === 'connecting' ? 'info' : 'danger'"
-    [icon]="connectionState() === 'connected' ? 'pi pi-wifi' : connectionState() === 'reconnecting' ? 'pi pi-sync' : 'pi pi-times-circle'"
+    [icon]="connectionState() === 'connected' ? 'wifi' : connectionState() === 'reconnecting' ? 'sync' : 'cancel'"
   />
 </div>
 
 <div class="search-bar">
-  <input
-    pInputText
-    [(ngModel)]="tickerInput"
-    placeholder="Enter ticker (e.g. CDSL.NS)"
-    (keydown.enter)="onSubscribe()"
-  />
-  <p-button label="Subscribe" icon="pi pi-plus" (onClick)="onSubscribe()" />
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1">
+    <mat-label>Ticker</mat-label>
+    <input matInput [(ngModel)]="tickerInput" placeholder="e.g. CDSL.NS" (keydown.enter)="onSubscribe()" />
+  </mat-form-field>
+  <button mat-flat-button color="primary" (click)="onSubscribe()">
+    <mat-icon>add</mat-icon>
+    Subscribe
+  </button>
 </div>
 
 @if (subscribedTickers.size === 0) {
   <div class="empty-state">
-    <i class="pi pi-chart-line empty-state-icon"></i>
+    <mat-icon class="empty-state-icon">show_chart</mat-icon>
     <div class="empty-state-title">No stocks subscribed</div>
     <p class="empty-state-text">Enter a ticker symbol above and click Subscribe to start receiving live price updates.</p>
   </div>
@@ -31,31 +32,25 @@
 <div class="grid">
   @for (entry of subscribedTickers | keyvalue; track entry.key) {
     <div class="col-12 md:col-6 lg:col-4">
-      <p-card>
-        <ng-template pTemplate="header">
-          <div class="card-header">
-            <span class="font-bold text-lg">{{ entry.key }}</span>
-            <p-button
-              icon="pi pi-times"
-              severity="danger"
-              [rounded]="true"
-              [text]="true"
-              size="small"
-              (onClick)="onUnsubscribe(entry.key)"
-              pTooltip="Unsubscribe"
+      <mat-card appearance="outlined">
+        <div class="card-header">
+          <span class="font-bold text-lg">{{ entry.key }}</span>
+          <button mat-icon-button color="warn" matTooltip="Unsubscribe" (click)="onUnsubscribe(entry.key)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <mat-card-content>
+          <div class="text-2xl font-bold mb-3">
+            {{ entry.value !== null ? (entry.value | number:'1.2-2') : '—' }}
+            <app-tag
+              [value]="entry.value !== null ? 'LIVE' : 'WAITING'"
+              [severity]="entry.value !== null ? 'success' : 'warn'"
+              styleClass="ml-2"
             />
           </div>
-        </ng-template>
-        <div class="text-2xl font-bold mb-3">
-          {{ entry.value !== null ? (entry.value | number:'1.2-2') : '—' }}
-          <p-tag
-            [value]="entry.value !== null ? 'LIVE' : 'WAITING'"
-            [severity]="entry.value !== null ? 'success' : 'warn'"
-            styleClass="ml-2 text-xs"
-          />
-        </div>
-        <app-price-chart [ticker]="entry.key" />
-      </p-card>
+          <app-price-chart [ticker]="entry.key" />
+        </mat-card-content>
+      </mat-card>
     </div>
   }
 </div>

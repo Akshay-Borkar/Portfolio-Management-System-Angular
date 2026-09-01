@@ -10,7 +10,7 @@
   </div>
   @if (loading) {
     <div class="chart-loading">
-      <p-skeleton height="200px" />
+      <app-skeleton height="200px" />
     </div>
   }
   <div #chartContainer class="chart-container" [class.hidden]="loading"></div>

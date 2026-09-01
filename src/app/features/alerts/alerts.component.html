@@ -4,135 +4,87 @@
       <h2 class="page-title">Price Alerts</h2>
       <p class="page-subtitle">Get notified when a stock hits your target price</p>
     </div>
-    <p-button label="New Alert" icon="pi pi-plus" (onClick)="openDialog()" />
+    <button mat-flat-button color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+      New Alert
+    </button>
   </div>
 
   @if (loading$ | async) {
-    <p-card>
-      @for (i of [1,2,3,4]; track i) {
-        <div class="skeleton-row">
-          <p-skeleton width="6rem" height="1.25rem" />
-          <p-skeleton width="4rem" height="1.25rem" />
-          <p-skeleton width="5rem" height="1.25rem" />
-          <p-skeleton width="4rem" height="1.25rem" />
-          <p-skeleton width="2rem" height="1.25rem" />
-        </div>
-      }
-    </p-card>
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        @for (i of [1,2,3,4]; track i) {
+          <div class="skeleton-row">
+            <app-skeleton width="6rem" height="1.25rem" />
+            <app-skeleton width="4rem" height="1.25rem" />
+            <app-skeleton width="5rem" height="1.25rem" />
+            <app-skeleton width="4rem" height="1.25rem" />
+            <app-skeleton width="2rem" height="1.25rem" />
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
   } @else {
     @if ((alerts$ | async)?.length === 0 && (totalCount$ | async) === 0) {
       <div class="empty-state">
-        <i class="pi pi-bell empty-state-icon"></i>
+        <mat-icon class="empty-state-icon">notifications</mat-icon>
         <h3 class="empty-state-title">No alerts set</h3>
         <p class="empty-state-text">Create a price alert to get notified when a stock reaches your target.</p>
-        <p-button label="Create First Alert" icon="pi pi-plus" (onClick)="openDialog()" />
+        <button mat-flat-button color="primary" (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          Create First Alert
+        </button>
       </div>
     } @else {
-      <p-card>
-        <p-table [value]="(alerts$ | async) ?? []" [tableStyle]="{ 'min-width': '40rem' }" responsiveLayout="scroll">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Ticker</th>
-              <th>Condition</th>
-              <th>Target Price</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th></th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-alert>
-            <tr [class.triggered-row]="alert.isTriggered">
-              <td><strong>{{ alert.ticker }}</strong></td>
-              <td>
-                <span [class]="alert.condition === 'Above' ? 'badge-gain' : 'badge-loss'">
-                  {{ alert.condition }}
-                </span>
-              </td>
-              <td>{{ alert.targetPrice | currency:'USD':'symbol':'1.2-2' }}</td>
-              <td>
-                @if (alert.isTriggered) {
-                  <span class="status-triggered"><i class="pi pi-check-circle"></i> Triggered</span>
-                } @else {
-                  <span class="status-active"><i class="pi pi-clock"></i> Active</span>
-                }
-              </td>
-              <td class="text-color-secondary text-sm">{{ alert.dateCreated | date:'mediumDate' }}</td>
-              <td>
-                <p-button
-                  icon="pi pi-trash"
-                  severity="danger"
-                  [text]="true"
-                  size="small"
-                  pTooltip="Delete alert"
-                  tooltipPosition="left"
-                  (onClick)="deleteAlert(alert)"
-                />
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-        <p-paginator
-          [rows]="(pageSize$ | async) ?? 10"
-          [totalRecords]="(totalCount$ | async) ?? 0"
-          [first]="(((page$ | async) ?? 1) - 1) * ((pageSize$ | async) ?? 10)"
-          [rowsPerPageOptions]="[5, 10, 25]"
-          (onPageChange)="onPageChange($event)"
-          styleClass="paginator"
+      <mat-card appearance="outlined">
+        <table mat-table [dataSource]="(alerts$ | async) ?? []" class="w-full">
+          <ng-container matColumnDef="ticker">
+            <th mat-header-cell *matHeaderCellDef>Ticker</th>
+            <td mat-cell *matCellDef="let alert"><strong>{{ alert.ticker }}</strong></td>
+          </ng-container>
+          <ng-container matColumnDef="condition">
+            <th mat-header-cell *matHeaderCellDef>Condition</th>
+            <td mat-cell *matCellDef="let alert">
+              <span [class]="alert.condition === 'Above' ? 'badge-gain' : 'badge-loss'">{{ alert.condition }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="targetPrice">
+            <th mat-header-cell *matHeaderCellDef>Target Price</th>
+            <td mat-cell *matCellDef="let alert">{{ alert.targetPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let alert">
+              @if (alert.isTriggered) {
+                <span class="status-triggered"><mat-icon>check_circle</mat-icon> Triggered</span>
+              } @else {
+                <span class="status-active"><mat-icon>schedule</mat-icon> Active</span>
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="created">
+            <th mat-header-cell *matHeaderCellDef>Created</th>
+            <td mat-cell *matCellDef="let alert" class="text-color-secondary text-sm">{{ alert.dateCreated | date:'mediumDate' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let alert">
+              <button mat-icon-button color="warn" matTooltip="Delete alert" (click)="deleteAlert(alert)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns" [class.triggered-row]="row.isTriggered"></tr>
+        </table>
+        <mat-paginator
+          [length]="(totalCount$ | async) ?? 0"
+          [pageSize]="(pageSize$ | async) ?? 10"
+          [pageIndex]="(((page$ | async) ?? 1) - 1)"
+          [pageSizeOptions]="[5, 10, 25]"
+          (page)="onPageChange($event)"
         />
-      </p-card>
+      </mat-card>
     }
   }
 </div>
-
-<p-confirmDialog styleClass="confirm-dialog" />
-
-<p-dialog
-  header="New Price Alert"
-  [(visible)]="showDialog"
-  [modal]="true"
-  styleClass="alert-dialog"
-  [draggable]="false"
->
-  <div class="dialog-form">
-    <div class="form-field">
-      <label>Ticker Symbol</label>
-      <input
-        pInputText
-        [(ngModel)]="form.ticker"
-        placeholder="e.g. AAPL"
-        class="ticker-input"
-      />
-    </div>
-    <div class="form-field">
-      <label>Condition</label>
-      <p-select
-        [options]="conditionOptions"
-        [(ngModel)]="form.condition"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="w-full"
-      />
-    </div>
-    <div class="form-field">
-      <label>Target Price (USD)</label>
-      <p-inputnumber
-        [(ngModel)]="form.targetPrice"
-        mode="currency"
-        currency="USD"
-        locale="en-US"
-        [minFractionDigits]="2"
-        styleClass="w-full"
-      />
-    </div>
-  </div>
-  <ng-template pTemplate="footer">
-    <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="showDialog = false" />
-    <p-button
-      label="Create Alert"
-      icon="pi pi-bell"
-      [loading]="(loading$ | async) ?? false"
-      [disabled]="(loading$ | async) ?? false"
-      (onClick)="submit()"
-    />
-  </ng-template>
-</p-dialog>

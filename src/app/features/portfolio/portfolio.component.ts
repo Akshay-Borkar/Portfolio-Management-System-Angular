@@ -1,10 +1,15 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { PaginatorState } from 'primeng/paginator';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map, Subject } from 'rxjs';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { map, Subject, takeUntil } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import type { ChartConfiguration } from 'chart.js';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { SharedModule } from '../../shared/modules/shared.module';
+import { ConfirmService } from '../../shared/services/confirm.service';
+import { NotificationService } from '../../shared/services/notification.service';
 import { loadPortfolio, addStock, addInvestment, deleteStock } from '../../store/portfolio/portfolio.actions';
 import { loadSectors } from '../../store/stock-sector/stock-sector.actions';
 import {
@@ -15,23 +20,25 @@ import {
   selectSectorAllocations,
 } from '../../store/portfolio/portfolio.selectors';
 import { selectAllSectors } from '../../store/stock-sector/stock-sector.selectors';
-import { InvestmentHistoryDTO } from '../../core/models/portfolio.models';
+import { InvestmentHistoryDTO, PortfolioHoldingDTO } from '../../core/models/portfolio.models';
 import { PortfolioService } from '../../core/services/portfolio.service';
+import { AddStockDialogComponent } from './add-stock-dialog.component';
+import { AddInvestmentDialogComponent } from './add-investment-dialog.component';
 
 @Component({
   selector: 'app-portfolio',
   standalone: true,
-  imports: [SharedModule],
-  providers: [ConfirmationService],
+  imports: [SharedModule, BaseChartDirective],
+  providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css',
 })
 export class PortfolioComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
-  private readonly fb = inject(FormBuilder);
   private readonly portfolioService = inject(PortfolioService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirm = inject(ConfirmService);
+  private readonly notify = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
   private readonly destroy$ = new Subject<void>();
 
   readonly summary$ = this.store.select(selectPortfolioSummary);
@@ -40,8 +47,22 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   readonly holdings$ = this.store.select(selectHoldings);
   readonly sectors$ = this.store.select(selectAllSectors);
 
+  readonly holdingsColumns = [
+    'expand', 'ticker', 'stockName', 'sector', 'quantity',
+    'avgBuyingPrice', 'currentPrice', 'investedAmount', 'pnL', 'actions',
+  ];
+  readonly historyColumns = ['date', 'buyingPrice', 'quantity', 'amount'];
+  readonly holdingsDataSource = new MatTableDataSource<PortfolioHoldingDTO>([]);
+
+  @ViewChild(MatSort) set sort(s: MatSort | undefined) {
+    if (s) this.holdingsDataSource.sort = s;
+  }
+  @ViewChild('holdingsPaginator') set holdingsPaginator(p: MatPaginator | undefined) {
+    if (p) this.holdingsDataSource.paginator = p;
+  }
+
   readonly sectorChartData$ = this.store.select(selectSectorAllocations).pipe(
-    map((allocations) => ({
+    map((allocations): ChartConfiguration<'doughnut'>['data'] => ({
       labels: allocations.map((s) => s.sectorName),
       datasets: [
         {
@@ -56,15 +77,15 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     }))
   );
 
-  readonly chartOptions = {
+  readonly chartOptions: ChartConfiguration<'doughnut'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { position: 'bottom', labels: { padding: 16, font: { size: 12 } } },
     },
     cutout: '65%',
   };
 
-  showAddStockDialog = false;
-  showAddInvestmentDialog = false;
   readonly today = new Date();
 
   // Investment history state
@@ -75,35 +96,13 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   readonly historyPageSize = 5;
   historyLoading = false;
 
-  readonly stockForm = this.fb.group({
-    ticker: ['', [Validators.required, Validators.maxLength(20)]],
-    stockName: ['', [Validators.required, Validators.maxLength(100)]],
-    stockSectorId: ['', Validators.required],
-    stockPE: [null as number | null],
-  });
-
-  readonly investmentForm = this.fb.group({
-    stockId: ['', Validators.required],
-    investedAmount: [null as number | null, [Validators.required, Validators.min(1)]],
-    buyingPrice: [null as number | null, [Validators.required, Validators.min(0.01)]],
-    investmentDate: [null as Date | null, Validators.required],
-  });
-
-  confirmDeleteStock(stockId: string, ticker: string): void {
-    this.confirmationService.confirm({
-      message: `Delete <strong>${ticker}</strong> and all its investment history? This cannot be undone.`,
-      header: 'Delete Stock',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Delete',
-      rejectLabel: 'Cancel',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => this.store.dispatch(deleteStock({ stockId })),
-    });
-  }
-
   ngOnInit(): void {
     this.store.dispatch(loadPortfolio());
     this.store.dispatch(loadSectors());
+
+    this.holdings$.pipe(takeUntil(this.destroy$)).subscribe((holdings) => {
+      this.holdingsDataSource.data = holdings ?? [];
+    });
   }
 
   ngOnDestroy(): void {
@@ -115,9 +114,43 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     this.store.dispatch(loadPortfolio());
   }
 
+  isExpanded(row: PortfolioHoldingDTO): boolean {
+    return this.expandedStockId === row.stockId;
+  }
+
+  openAddStockDialog(): void {
+    this.dialog
+      .open(AddStockDialogComponent, {
+        width: '420px',
+        data: { sectors$: this.sectors$, loading$: this.loading$ },
+      })
+      .afterClosed()
+      .subscribe((request) => {
+        if (request) this.store.dispatch(addStock({ request }));
+      });
+  }
+
   openAddInvestmentDialog(): void {
-    this.investmentForm.reset();
-    this.showAddInvestmentDialog = true;
+    this.dialog
+      .open(AddInvestmentDialogComponent, {
+        width: '420px',
+        data: { holdings$: this.holdings$, loading$: this.loading$ },
+      })
+      .afterClosed()
+      .subscribe((request) => {
+        if (request) this.store.dispatch(addInvestment({ request }));
+      });
+  }
+
+  async confirmDeleteStock(stockId: string, ticker: string): Promise<void> {
+    const ok = await this.confirm.confirm({
+      header: 'Delete Stock',
+      message: `Delete <strong>${ticker}</strong> and all its investment history? This cannot be undone.`,
+      icon: 'warning',
+      acceptTone: 'danger',
+      acceptLabel: 'Delete',
+    });
+    if (ok) this.store.dispatch(deleteStock({ stockId }));
   }
 
   toggleHistory(stockId: string): void {
@@ -133,11 +166,9 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     this.loadHistory(stockId, 1);
   }
 
-  onHistoryPageChange(event: PaginatorState): void {
+  onHistoryPageChange(event: PageEvent): void {
     if (!this.expandedStockId) return;
-    const first = event.first ?? 0;
-    const rows = event.rows ?? this.historyPageSize;
-    this.historyPage = Math.floor(first / rows) + 1;
+    this.historyPage = event.pageIndex + 1;
     this.loadHistory(this.expandedStockId, this.historyPage);
   }
 
@@ -153,43 +184,8 @@ export class PortfolioComponent implements OnInit, OnDestroy {
         this.investmentHistory = [];
         this.historyTotalCount = 0;
         this.historyLoading = false;
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load investment history.' });
+        this.notify.error('Error', 'Failed to load investment history.');
       },
     });
-  }
-
-  submitAddStock(): void {
-    if (this.stockForm.invalid) return;
-    const v = this.stockForm.value;
-    this.store.dispatch(
-      addStock({
-        request: {
-          ticker: v.ticker!,
-          stockName: v.stockName!,
-          stockSectorId: v.stockSectorId!,
-          stockPE: v.stockPE ?? null,
-        },
-      })
-    );
-    this.stockForm.reset();
-    this.showAddStockDialog = false;
-  }
-
-  submitAddInvestment(): void {
-    if (this.investmentForm.invalid) return;
-    const v = this.investmentForm.value;
-    const date = v.investmentDate as Date;
-    this.store.dispatch(
-      addInvestment({
-        request: {
-          stockId: v.stockId!,
-          investedAmount: v.investedAmount!,
-          buyingPrice: v.buyingPrice!,
-          investmentDate: date.toISOString(),
-        },
-      })
-    );
-    this.investmentForm.reset();
-    this.showAddInvestmentDialog = false;
   }
 }

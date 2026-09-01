@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { PortfolioReview } from '../../core/models/portfolio-review.models';
 
@@ -10,11 +11,12 @@ import { PortfolioReview } from '../../core/models/portfolio-review.models';
   styleUrl: './portfolio-review-modal.component.css',
 })
 export class PortfolioReviewModalComponent {
-  @Input() visible = false;
-  @Input() review: PortfolioReview | null = null;
-  @Output() visibleChange = new EventEmitter<boolean>();
+  constructor(
+    public dialogRef: MatDialogRef<PortfolioReviewModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public review: PortfolioReview | null,
+  ) {}
 
   close(): void {
-    this.visibleChange.emit(false);
+    this.dialogRef.close();
   }
 }

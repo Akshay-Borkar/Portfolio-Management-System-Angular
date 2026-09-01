@@ -1,64 +1,63 @@
 <h2>News Sentiment Analysis</h2>
 
 <div class="search-bar">
-  <input
-    pInputText
-    [(ngModel)]="ticker"
-    placeholder="Enter ticker (e.g. AAPL)"
-    (keydown.enter)="onAnalyze()"
-  />
-  <p-button
-    label="Analyze"
-    icon="pi pi-search"
-    [loading]="loading"
-    (onClick)="onAnalyze()"
-    [disabled]="!ticker.trim()"
-  />
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1">
+    <mat-label>Ticker</mat-label>
+    <input matInput [(ngModel)]="ticker" placeholder="e.g. AAPL" (keydown.enter)="onAnalyze()" />
+  </mat-form-field>
+  <button mat-flat-button color="primary" [disabled]="loading || !ticker.trim()" (click)="onAnalyze()">
+    <mat-icon>search</mat-icon>
+    Analyze
+  </button>
 </div>
 
 @if (error) {
-  <p-message severity="error" [text]="error" styleClass="mb-3" />
+  <app-inline-message severity="error" [text]="error" class="block mb-3" />
 }
 
 @if (loading) {
-  <p-card>
-    <p-skeleton height="2.75rem" styleClass="mb-2" />
-    @for (i of [1,2,3,4,5,6,7,8]; track i) {
-      <div class="flex gap-3 align-items-center mb-2">
-        <p-skeleton height="2.25rem" styleClass="flex-1" />
-        <p-skeleton height="2.25rem" width="7rem" />
-      </div>
-    }
-  </p-card>
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <app-skeleton height="2.75rem" class="block mb-2" />
+      @for (i of [1,2,3,4,5,6,7,8]; track i) {
+        <div class="flex gap-3 align-items-center mb-2">
+          <app-skeleton height="2.25rem" class="flex-1" />
+          <app-skeleton height="2.25rem" width="7rem" />
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
 }
 
 @if (results.length > 0) {
-  <p-card [header]="'News for ' + analyzedTicker">
-    <p-table [value]="results" [paginator]="results.length > 10" [rows]="10" responsiveLayout="scroll">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Article</th>
-          <th class="sentiment-col">Sentiment</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-item>
-        <tr>
-          <td>{{ item.article }}</td>
-          <td>
-            <p-tag
-              [value]="item.sentiment"
-              [styleClass]="getSentimentClass(item.sentiment)"
-            />
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>News for {{ analyzedTicker }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" class="w-full">
+        <ng-container matColumnDef="article">
+          <th mat-header-cell *matHeaderCellDef>Article</th>
+          <td mat-cell *matCellDef="let item">{{ item.article }}</td>
+        </ng-container>
+        <ng-container matColumnDef="sentiment">
+          <th mat-header-cell *matHeaderCellDef class="sentiment-col">Sentiment</th>
+          <td mat-cell *matCellDef="let item">
+            <app-tag [value]="item.sentiment" [styleClass]="getSentimentClass(item.sentiment)" />
           </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </p-card>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50]" [hidePageSize]="results.length <= 10"
+        [class.hidden]="results.length <= 10" />
+    </mat-card-content>
+  </mat-card>
 }
 
 @if (!loading && results.length === 0 && analyzedTicker) {
   <div class="empty-state">
-    <i class="pi pi-inbox empty-state-icon"></i>
+    <mat-icon class="empty-state-icon">inbox</mat-icon>
     <div class="empty-state-title">No articles found</div>
     <p class="empty-state-text">No news articles were found for "{{ analyzedTicker }}". Try a different ticker symbol.</p>
   </div>
@@ -66,7 +65,7 @@
 
 @if (!loading && !analyzedTicker) {
   <div class="empty-state">
-    <i class="pi pi-comments empty-state-icon"></i>
+    <mat-icon class="empty-state-icon">forum</mat-icon>
     <div class="empty-state-title">Analyse news sentiment</div>
     <p class="empty-state-text">Enter a ticker symbol above to fetch and analyse the latest news headlines.</p>
   </div>

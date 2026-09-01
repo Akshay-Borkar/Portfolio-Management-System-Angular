@@ -1,0 +1,107 @@
+/* ──────────────────────────────────────────────────────────────
+   Minimal layout utilities — replaces the subset of PrimeFlex
+   classes the templates actually use (12-col responsive grid +
+   flex / gap / spacing / text helpers). Class names are kept
+   identical to PrimeFlex so templates need no changes.
+   Spacing scale: 1=.25rem 2=.5rem 3=1rem 4=1.5rem 5=2rem 6=3rem
+   Breakpoints:   sm≥576  md≥768  lg≥992  xl≥1200
+   ────────────────────────────────────────────────────────────── */
+
+@use 'sass:math';
+
+$spacing: (0: 0, 1: .25rem, 2: .5rem, 3: 1rem, 4: 1.5rem, 5: 2rem, 6: 3rem);
+$breakpoints: (sm: 576px, md: 768px, lg: 992px, xl: 1200px);
+
+/* ── 12-col grid ── */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -.5rem;
+  margin-right: -.5rem;
+  margin-left: -.5rem;
+}
+
+[class*='col-'],
+[class*=':col-'],
+.col {
+  flex: 0 0 auto;
+  padding: .5rem;
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} { width: math.percentage(math.div($i, 12)); }
+}
+.col { flex: 1 1 0; width: auto; }
+
+@each $bp, $min in $breakpoints {
+  @media (min-width: $min) {
+    @for $i from 1 through 12 {
+      .#{$bp}\:col-#{$i} { width: math.percentage(math.div($i, 12)); }
+    }
+    .#{$bp}\:col { flex: 1 1 0; width: auto; }
+  }
+}
+
+/* ── flexbox ── */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-column { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1 1 0; }
+.flex-auto { flex: 1 1 auto; }
+.align-items-center { align-items: center; }
+.align-items-start { align-items: flex-start; }
+.align-items-end { align-items: flex-end; }
+.justify-content-center { justify-content: center; }
+.justify-content-between { justify-content: space-between; }
+.justify-content-end { justify-content: flex-end; }
+.justify-content-start { justify-content: flex-start; }
+
+/* ── gap ── */
+@each $k, $v in $spacing { .gap-#{$k} { gap: $v; } }
+
+/* ── margin / padding ── */
+@each $k, $v in $spacing {
+  .m-#{$k}  { margin: $v; }
+  .mt-#{$k} { margin-top: $v; }
+  .mr-#{$k} { margin-right: $v; }
+  .mb-#{$k} { margin-bottom: $v; }
+  .ml-#{$k} { margin-left: $v; }
+  .mx-#{$k} { margin-left: $v; margin-right: $v; }
+  .my-#{$k} { margin-top: $v; margin-bottom: $v; }
+  .p-#{$k}  { padding: $v; }
+  .pt-#{$k} { padding-top: $v; }
+  .pr-#{$k} { padding-right: $v; }
+  .pb-#{$k} { padding-bottom: $v; }
+  .pl-#{$k} { padding-left: $v; }
+  .px-#{$k} { padding-left: $v; padding-right: $v; }
+  .py-#{$k} { padding-top: $v; padding-bottom: $v; }
+}
+.m-auto  { margin: auto; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+/* ── sizing ── */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+/* ── typography ── */
+.text-xs  { font-size: .75rem; }
+.text-sm  { font-size: .875rem; }
+.text-base { font-size: 1rem; }
+.text-lg  { font-size: 1.125rem; }
+.text-xl  { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.font-normal   { font-weight: 400; }
+.font-medium   { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold     { font-weight: 700; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.text-color-secondary { color: var(--mat-sys-on-surface-variant); }
+
+/* ── misc ── */
+.hidden { display: none; }
+.block  { display: block; }
+.relative { position: relative; }
+.cursor-pointer { cursor: pointer; }

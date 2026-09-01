@@ -1,12 +1,6 @@
-<p-dialog
-  header="Weekly Portfolio Review"
-  [visible]="visible"
-  (visibleChange)="visibleChange.emit($event)"
-  [modal]="true"
-  [style]="{ width: '780px', maxWidth: '95vw' }"
-  [draggable]="false"
-  styleClass="portfolio-review-dialog">
+<h2 mat-dialog-title>Weekly Portfolio Review</h2>
 
+<mat-dialog-content>
   @if (review) {
     <div class="review-meta mb-3">
       <span class="text-sm text-color-secondary">
@@ -14,42 +8,42 @@
       </span>
     </div>
 
-    <p-card styleClass="review-section mb-3">
-      <ng-template pTemplate="header">
-        <div class="review-section-header news">
-          <i class="pi pi-newspaper"></i>
-          <span>News Summary</span>
-        </div>
-      </ng-template>
-      <div class="review-content" [innerHTML]="review.newsSummary | markdown"></div>
-    </p-card>
+    <mat-card class="review-section mb-3" appearance="outlined">
+      <div class="review-section-header news">
+        <mat-icon>newspaper</mat-icon>
+        <span>News Summary</span>
+      </div>
+      <mat-card-content>
+        <div class="review-content" [innerHTML]="review.newsSummary | markdown"></div>
+      </mat-card-content>
+    </mat-card>
 
-    <p-card styleClass="review-section mb-3">
-      <ng-template pTemplate="header">
-        <div class="review-section-header risk">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>Risk Analysis</span>
-        </div>
-      </ng-template>
-      <div class="review-content" [innerHTML]="review.riskAnalysis | markdown"></div>
-    </p-card>
+    <mat-card class="review-section mb-3" appearance="outlined">
+      <div class="review-section-header risk">
+        <mat-icon>warning</mat-icon>
+        <span>Risk Analysis</span>
+      </div>
+      <mat-card-content>
+        <div class="review-content" [innerHTML]="review.riskAnalysis | markdown"></div>
+      </mat-card-content>
+    </mat-card>
 
-    <p-card styleClass="review-section">
-      <ng-template pTemplate="header">
-        <div class="review-section-header recommendation">
-          <i class="pi pi-lightbulb"></i>
-          <span>Weekly Recommendation</span>
-        </div>
-      </ng-template>
-      <div class="review-content" [innerHTML]="review.weeklyRecommendation | markdown"></div>
-    </p-card>
+    <mat-card class="review-section" appearance="outlined">
+      <div class="review-section-header recommendation">
+        <mat-icon>lightbulb</mat-icon>
+        <span>Weekly Recommendation</span>
+      </div>
+      <mat-card-content>
+        <div class="review-content" [innerHTML]="review.weeklyRecommendation | markdown"></div>
+      </mat-card-content>
+    </mat-card>
   } @else {
     <div class="flex justify-content-center align-items-center" style="min-height: 200px;">
-      <p-progressSpinner strokeWidth="4" />
+      <mat-progress-spinner mode="indeterminate" diameter="44" />
     </div>
   }
+</mat-dialog-content>
 
-  <ng-template pTemplate="footer">
-    <p-button label="Close" severity="secondary" (onClick)="close()" />
-  </ng-template>
-</p-dialog>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>

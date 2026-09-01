@@ -20,6 +20,7 @@ export class LoginComponent {
   readonly loading$ = this.store.select(selectAuthLoading);
   readonly error$ = this.store.select(selectAuthError);
   readonly azureAdEnabled = isAzureAdConfigured();
+  hidePassword = true;
 
   form = this.fb.nonNullable.group({
     userName: ['', Validators.required],

@@ -20,6 +20,7 @@ export class RegisterComponent {
   readonly error$ = this.store.select(selectAuthError);
 
   readonly roles = ['Employee', 'Administrator'];
+  hidePassword = true;
 
   form = this.fb.nonNullable.group({
     firstName: ['', Validators.required],

@@ -1,9 +1,10 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { MatDialog } from '@angular/material/dialog';
 import { map, Subscription, take } from 'rxjs';
-import { MessageService } from 'primeng/api';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { PortfolioReviewModalComponent } from '../portfolio-review/portfolio-review-modal.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { selectAllSectors, selectSectorsLoading } from '../../store/stock-sector/stock-sector.selectors';
 import { loadSectors } from '../../store/stock-sector/stock-sector.actions';
 import { selectCurrentUser } from '../../store/auth/auth.selectors';
@@ -19,7 +20,7 @@ import { PortfolioReview } from '../../core/models/portfolio-review.models';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SharedModule, PortfolioReviewModalComponent],
+  imports: [SharedModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -27,7 +28,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly agentService = inject(AgentService);
   private readonly reviewSignalR = inject(PortfolioReviewSignalRService);
-  private readonly messageService = inject(MessageService);
+  private readonly notify = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
 
   readonly currentUser$ = this.store.select(selectCurrentUser);
   readonly sectorCount$ = this.store.select(selectAllSectors).pipe(map((s) => s.length));
@@ -47,9 +49,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     )
   );
 
+  readonly gainerColumns = ['ticker', 'stock', 'ltp', 'return'];
+
   // Review state
   readonly reviewGenerating = signal(false);
-  readonly reviewModalVisible = signal(false);
   readonly latestReview = signal<PortfolioReview | null>(null);
   readonly unreadReviewCount = signal(0);
 
@@ -64,12 +67,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.reviewSub = this.reviewSignalR.reviews$.subscribe((review) => {
       this.latestReview.set(review);
       this.unreadReviewCount.update((n) => n + 1);
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Portfolio Review Ready',
-        detail: 'Your weekly review has been generated. Click the bell to view.',
-        life: 6000,
-      });
+      this.notify.info(
+        'Portfolio Review Ready',
+        'Your weekly review has been generated. Click the bell to view.',
+      );
     });
   }
 
@@ -79,7 +80,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   openReview(): void {
     this.unreadReviewCount.set(0);
-    this.reviewModalVisible.set(true);
+    this.dialog.open(PortfolioReviewModalComponent, {
+      data: this.latestReview(),
+      width: '820px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
   }
 
   generateReview(): void {
@@ -88,12 +94,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       map((s) => (s?.holdings ?? []).map((h) => h.ticker)),
     ).subscribe((tickers) => {
       if (!tickers.length) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'No Holdings',
-          detail: 'Add holdings to your portfolio before generating a review.',
-          life: 4000,
-        });
+        this.notify.warn(
+          'No Holdings',
+          'Add holdings to your portfolio before generating a review.',
+        );
         return;
       }
 
@@ -102,21 +106,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.agentService.runPortfolioReview({ tickers }).subscribe({
         next: (res) => {
           this.reviewGenerating.set(false);
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Review Queued',
-            detail: res.message,
-            life: 5000,
-          });
+          this.notify.success('Review Queued', res.message);
         },
         error: () => {
           this.reviewGenerating.set(false);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Review Failed',
-            detail: 'Could not generate the portfolio review. Please try again.',
-            life: 5000,
-          });
+          this.notify.error(
+            'Review Failed',
+            'Could not generate the portfolio review. Please try again.',
+          );
         },
       });
     });

@@ -1,3 +1,41 @@
+@use '@angular/material' as mat;
+@use './styles/utilities';
+
+/* ── Angular Material 3 theme ──
+   No `theme-type` key → system tokens are emitted with light-dark(), so the
+   active scheme follows the `color-scheme` property. ThemeService toggles the
+   `.dark-mode` class on <html> (unchanged); we only switch color-scheme here. */
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+html { color-scheme: light; }
+html.dark-mode { color-scheme: dark; }
+
+/* ── Compatibility shim ──
+   A handful of component stylesheets still reference the CSS variables PrimeNG
+   used to provide. Map them onto Material system tokens / fixed values so those
+   files keep working without edits. */
+:root {
+  --green-400: #34d399;
+  --green-500: #22c55e;
+  --red-400: #f87171;
+  --red-500: #ef4444;
+  --surface-border: var(--mat-sys-outline-variant);
+  --text-color-secondary: var(--mat-sys-on-surface-variant);
+  --p-text-muted-color: var(--mat-sys-on-surface-variant);
+  --p-surface-border: var(--mat-sys-outline-variant);
+  --p-green-400: #34d399;
+  --p-blue-400: #60a5fa;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -6,13 +44,13 @@ html,
 body {
   height: 100%;
   margin: 0;
-  font-family: var(--font-family);
-  background: #0a0e1a;
-  color: var(--text-color);
+  font-family: Roboto, -apple-system, 'Segoe UI', system-ui, sans-serif;
+  background: var(--mat-sys-background);
+  color: var(--mat-sys-on-surface);
 }
 
-/* ── Global background ── */
-body::before {
+/* ── Global background (dark mode only) ── */
+html.dark-mode body::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -39,202 +77,34 @@ body::before {
   margin: 0 auto;
 }
 
-/* ── Glassmorphism card base ── */
-.p-card {
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.06) !important;
-  transition: box-shadow 0.25s, transform 0.25s !important;
+/* ── Cards get consistent vertical rhythm (p-card used to) ── */
+mat-card {
   margin-bottom: 1.25rem;
-
-  &:hover {
-    box-shadow: 0 8px 36px rgba(99, 102, 241, 0.2), inset 0 1px 0 rgba(255,255,255,0.08) !important;
-    transform: translateY(-2px);
-  }
-
-  .p-card-title {
-    color: rgba(255, 255, 255, 0.9) !important;
-    font-weight: 700;
-  }
-
-  .p-card-content {
-    color: rgba(255, 255, 255, 0.75) !important;
-  }
-}
-
-/* ── Navbar overrides ── */
-.p-menubar {
-  background: rgba(10, 14, 26, 0.85) !important;
-  border: none !important;
-  border-bottom: 1px solid rgba(99, 102, 241, 0.2) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4) !important;
-  padding: 0.6rem 1.5rem !important;
-
-  .p-menuitem-link {
-    color: rgba(255, 255, 255, 0.75) !important;
-    border-radius: 8px !important;
-    transition: all 0.2s !important;
-
-    &:hover {
-      background: rgba(99, 102, 241, 0.15) !important;
-      color: #fff !important;
-    }
-  }
-
-  .p-menuitem-text,
-  .p-menuitem-icon {
-    color: inherit !important;
-  }
 }
 
 /* ── Page headings ── */
 h2 {
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: var(--mat-sys-on-surface);
   font-weight: 700;
 }
 
-/* ── Tables ── */
-.p-datatable {
-  .p-datatable-thead > tr > th {
-    background: rgba(99, 102, 241, 0.12) !important;
-    color: rgba(255, 255, 255, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-  }
-
-  .p-datatable-tbody > tr {
-    background: transparent !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-    transition: background 0.15s;
-
-    &:hover {
-      background: rgba(99, 102, 241, 0.08) !important;
-    }
-  }
-
-  .p-paginator {
-    background: transparent !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
-    color: rgba(255, 255, 255, 0.7) !important;
-  }
+/* ── mat-icon defaults to the Material Symbols font ── */
+mat-icon {
+  font-family: 'Material Symbols Outlined';
+  vertical-align: middle;
 }
 
-/* ── Inputs ── */
-.p-inputtext,
-.p-password input {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  border-radius: 10px !important;
-  transition: border-color 0.2s, box-shadow 0.2s !important;
-
-  &:focus {
-    border-color: rgba(99, 102, 241, 0.7) !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3) !important;
-  }
-}
-
-.p-inputnumber-input {
-  @extend .p-inputtext;
-}
-
-/* ── Dropdowns ── */
-.p-dropdown,
-.p-select {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  border-radius: 10px !important;
-
-  .p-dropdown-label,
-  .p-select-label {
-    color: rgba(255, 255, 255, 0.9) !important;
-  }
-}
-
-.p-dropdown-panel,
-.p-select-overlay {
-  background: #1a1f35 !important;
-  border-color: rgba(99, 102, 241, 0.25) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
-
-  .p-dropdown-item,
-  .p-select-option {
-    color: rgba(255, 255, 255, 0.8) !important;
-
-    &:hover,
-    &.p-highlight {
-      background: rgba(99, 102, 241, 0.2) !important;
-      color: #fff !important;
-    }
-  }
-}
-
-/* ── Dialogs ── */
-.p-dialog {
-  background: #12172b !important;
-  border: 1px solid rgba(99, 102, 241, 0.2) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
-
-  .p-dialog-header {
-    background: transparent !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-    color: rgba(255, 255, 255, 0.92) !important;
-    border-radius: 18px 18px 0 0 !important;
-  }
-
-  .p-dialog-content {
-    background: transparent !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-  }
-
-  label {
-    color: rgba(255, 255, 255, 0.65) !important;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-}
-
-/* ── Progress spinner ── */
-.p-progress-spinner-circle {
-  stroke: #6366f1 !important;
-}
-
-/* ── Tags / Badges ── */
-.p-tag {
-  border-radius: 6px !important;
-  font-weight: 600 !important;
-  font-size: 0.75rem !important;
-}
-
-/* ── Sentiment tag colors ── */
-.sentiment-positive { background: linear-gradient(135deg, #059669, #10b981) !important; }
-.sentiment-negative { background: linear-gradient(135deg, #dc2626, #ef4444) !important; }
-.sentiment-neutral  { background: linear-gradient(135deg, #d97706, #f59e0b) !important; }
-.sentiment-unknown  { background: rgba(255,255,255,0.15) !important; }
+/* ── Sentiment badge colours (applied to <span class="tag …">) ── */
+.sentiment-positive { background: linear-gradient(135deg, #059669, #10b981); color: #ecfdf5; }
+.sentiment-negative { background: linear-gradient(135deg, #dc2626, #ef4444); color: #fef2f2; }
+.sentiment-neutral  { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fffbeb; }
+.sentiment-unknown  { background: rgba(148, 163, 184, 0.25); color: var(--mat-sys-on-surface-variant); }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
-::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.4); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.7); }
-
-/* ── Text helpers ── */
-.text-color-secondary {
-  color: rgba(255, 255, 255, 0.5) !important;
-}
+::-webkit-scrollbar-track { background: rgba(127, 127, 127, 0.06); }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.7); }
 
 /* ── Empty states ── */
 .empty-state {
@@ -244,62 +114,26 @@ h2 {
 
 .empty-state-icon {
   font-size: 3.5rem;
-  color: rgba(255, 255, 255, 0.1);
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--mat-sys-outline);
   display: block;
-  margin-bottom: 1.25rem;
+  margin: 0 auto 1.25rem;
 }
 
 .empty-state-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--mat-sys-on-surface-variant);
   margin-bottom: 0.5rem;
 }
 
 .empty-state-text {
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--mat-sys-outline);
   font-size: 0.9rem;
   margin: 0 auto 1.25rem;
   max-width: 340px;
   line-height: 1.6;
-}
-
-/* ── Skeletons ── */
-.p-skeleton {
-  background: rgba(255, 255, 255, 0.07) !important;
-  border-radius: 8px !important;
-
-  &::after {
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.05),
-      transparent
-    ) !important;
-  }
-}
-
-/* ── Toast overrides ── */
-.p-toast {
-  .p-toast-message {
-    background: #1a1f35 !important;
-    border: 1px solid rgba(99, 102, 241, 0.25) !important;
-    border-radius: 12px !important;
-    backdrop-filter: blur(16px) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
-
-    .p-toast-message-text {
-      color: rgba(255, 255, 255, 0.9) !important;
-    }
-
-    .p-toast-summary {
-      font-weight: 700 !important;
-    }
-
-    .p-toast-detail {
-      color: rgba(255, 255, 255, 0.6) !important;
-    }
-  }
 }
 
 /* ── Markdown rendered content (injected via [innerHTML], cannot be component-scoped) ── */
@@ -402,26 +236,5 @@ h2 {
     input {
       min-width: 0;
     }
-
-    .p-button {
-      width: 100%;
-    }
-  }
-
-  /* Navbar mobile hamburger */
-  .p-menubar {
-    padding: 0.5rem 1rem !important;
-
-    .p-menubar-root-list {
-      background: rgba(10, 14, 26, 0.97) !important;
-      border: 1px solid rgba(99, 102, 241, 0.2) !important;
-      border-radius: 12px !important;
-      padding: 0.5rem !important;
-    }
-  }
-
-  /* Stack grid cols on small screens */
-  .grid > [class*='col-12'] {
-    padding: 0.4rem !important;
   }
 }

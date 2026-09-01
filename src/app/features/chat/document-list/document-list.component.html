@@ -1,28 +1,26 @@
 <div class="list-section">
   <div class="section-header">
     <div class="section-label">
-      <i class="pi pi-database"></i>
+      <mat-icon>database</mat-icon>
       <span>Indexed Documents</span>
     </div>
     <button
+      mat-icon-button
       class="refresh-btn"
-      pButton
-      icon="pi pi-refresh"
       [class.spin]="loading()"
       (click)="load()"
-      pTooltip="Refresh list"
-      tooltipPosition="left"
-      [text]="true"
-      [rounded]="true"
-      size="small"
-    ></button>
+      matTooltip="Refresh list"
+      matTooltipPosition="left"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
 
   @if (loading()) {
     <div class="skeleton-list">
-      <p-skeleton height="1.6rem" styleClass="mb-1" />
-      <p-skeleton height="1.6rem" width="80%" styleClass="mb-1" />
-      <p-skeleton height="1.6rem" width="65%" />
+      <app-skeleton height="1.6rem" class="block mb-1" />
+      <app-skeleton height="1.6rem" width="80%" class="block mb-1" />
+      <app-skeleton height="1.6rem" width="65%" />
     </div>
   } @else if (error()) {
     <p class="list-notice error">Failed to load. <button class="link-btn" (click)="load()">Retry</button></p>
@@ -32,7 +30,7 @@
     <ul class="doc-list">
       @for (doc of documents(); track doc) {
         <li class="doc-item">
-          <i class="pi pi-file-pdf doc-icon"></i>
+          <mat-icon class="doc-icon">picture_as_pdf</mat-icon>
           <span class="doc-name" [title]="doc">{{ doc }}</span>
         </li>
       }

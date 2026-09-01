@@ -25,8 +25,10 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-.header-title .pi-sliders-h {
-  font-size: 1.3rem;
+.header-title .title-icon {
+  font-size: 1.4rem;
+  width: 1.4rem;
+  height: 1.4rem;
   color: #34d399;
 }
 
@@ -83,6 +85,8 @@
 
 .empty-icon {
   font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
   color: rgba(52, 211, 153, 0.5);
 }
 
@@ -160,12 +164,11 @@
   letter-spacing: 0.04em;
 }
 
-.msg-label .pi-sliders-h {
+.msg-label mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
   color: #34d399;
-}
-
-.msg-label .pi-user {
-  color: #6ee7b7;
 }
 
 .msg-content {

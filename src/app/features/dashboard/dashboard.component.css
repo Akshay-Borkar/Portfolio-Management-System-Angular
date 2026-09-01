@@ -46,7 +46,7 @@
   justify-content: center;
   flex-shrink: 0;
 
-  i { font-size: 1.6rem; }
+  mat-icon { font-size: 1.6rem; width: 1.6rem; height: 1.6rem; }
 }
 
 .icon-badge.indigo { background: rgba(99, 102, 241, 0.18); color: #818cf8; }

@@ -1,6 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, switchMap } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { SentimentService } from '../../core/services/sentiment.service';
 import { SentimentResult } from '../../core/models/sentiment.models';
@@ -22,12 +24,20 @@ export class SentimentComponent {
   loading = false;
   error = '';
 
+  readonly displayedColumns = ['article', 'sentiment'];
+  readonly dataSource = new MatTableDataSource<SentimentResult>([]);
+
+  @ViewChild(MatPaginator) set paginator(p: MatPaginator | undefined) {
+    if (p) this.dataSource.paginator = p;
+  }
+
   constructor() {
     this.analyze$.pipe(
       switchMap((t) => {
         this.loading = true;
         this.error = '';
         this.results = [];
+        this.dataSource.data = [];
         this.analyzedTicker = t;
         return this.sentimentService.analyzeNews(t);
       }),
@@ -35,6 +45,7 @@ export class SentimentComponent {
     ).subscribe({
       next: (data) => {
         this.results = data;
+        this.dataSource.data = data;
         this.loading = false;
       },
       error: (err) => {
